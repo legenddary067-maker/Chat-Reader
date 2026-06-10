@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <rect width="512" height="512" rx="110" fill="#0c0d0c" />
+  <defs>
+    <linearGradient id="bubbleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#128c7e" />
+      <stop offset="100%" stop-color="#25d366" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bfff00" />
+      <stop offset="100%" stop-color="#25d366" />
+    </linearGradient>
+  </defs>
+  
+  <!-- Subtle design circular frame -->
+  <circle cx="256" cy="256" r="236" fill="none" stroke="#25d366" stroke-width="4" stroke-opacity="0.1" />
+  
+  <g transform="translate(16, 8)">
+    <!-- Elegant Chat Reader Bubble -->
+    <path d="M140 150h200c22 0 40 18 40 40v120c0 22-18 40-40 40H210l-60 45v-45h-10c-22 0-40-18-40-40V190c0-22 18-40 40-40z" fill="url(#bubbleGrad)" />
+    
+    <!-- Text bar lines (representing dialogue logs) -->
+    <path d="M190 210h100" stroke="#075e54" stroke-width="12" stroke-linecap="round" />
+    <path d="M190 250h100" stroke="#075e54" stroke-width="12" stroke-linecap="round" />
+    <path d="M190 290h60" stroke="#075e54" stroke-width="12" stroke-linecap="round" />
+    
+    <!-- Magnifying lens overlay representing analytical parsing -->
+    <circle cx="315" cy="290" r="35" fill="#0c0d0c" stroke="url(#glowGrad)" stroke-width="12" />
+    <line x1="340" y1="315" x2="380" y2="355" stroke="url(#glowGrad)" stroke-width="14" stroke-linecap="round" />
+  </g>
+</svg>

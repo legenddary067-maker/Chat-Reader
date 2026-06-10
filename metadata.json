@@ -1,0 +1,6 @@
+{
+  "name": "ChatReader",
+  "description": "An interactive, modern chat export viewer and analyzer for WhatsApp and Instagram chat logs with rich analytics, search, and dynamic timeline.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
