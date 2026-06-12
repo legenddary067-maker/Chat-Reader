@@ -173,3 +173,1014 @@
     color: #000000 !important;
   }
 }
+
+/* Custom High-Contrast Light Mode overrides */
+#chatreader-root.light-mode {
+  background-color: #f1f5f9 !important;
+  color: #0d1117 !important;
+  background-image: radial-gradient(rgba(15, 23, 42, 0.08) 1px, transparent 1px) !important;
+
+  /* Invert all Tailwind neutral/zinc/slate grays so utility classes automatically adapt! */
+  --neutral-950: #ffffff;
+  --neutral-900: #f8fafc;
+  --neutral-850: #f1f5f9;
+  --neutral-800: #e2e8f0;
+  --neutral-750: #cbd5e1;
+  --neutral-700: #94a3b8;
+  --neutral-600: #64748b;
+  --neutral-500: #475569;
+  --neutral-400: #334155;
+  --neutral-300: #1e293b;
+  --neutral-200: #0f172a;
+  --neutral-100: #09090b;
+
+  --color-neutral-950: #ffffff;
+  --color-neutral-900: #f8fafc;
+  --color-neutral-850: #f1f5f9;
+  --color-neutral-800: #e2e8f0;
+  --color-neutral-750: #cbd5e1;
+  --color-neutral-700: #94a3b8;
+  --color-neutral-600: #64748b;
+  --color-neutral-500: #475569;
+  --color-neutral-400: #334155;
+  --color-neutral-300: #1e293b;
+  --color-neutral-200: #0f172a;
+  --color-neutral-100: #09090b;
+
+  --zinc-950: #ffffff;
+  --zinc-900: #f8fafc;
+  --zinc-850: #f1f5f9;
+  --zinc-800: #e2e8f0;
+  --zinc-750: #cbd5e1;
+  --zinc-700: #94a3b8;
+  --zinc-600: #64748b;
+  --zinc-500: #475569;
+  --zinc-400: #334155;
+  --zinc-300: #1e293b;
+  --zinc-200: #0f172a;
+  --zinc-100: #09090b;
+
+  --color-zinc-950: #ffffff;
+  --color-zinc-900: #f8fafc;
+  --color-zinc-850: #f1f5f9;
+  --color-zinc-800: #e2e8f0;
+  --color-zinc-750: #cbd5e1;
+  --color-zinc-700: #94a3b8;
+  --color-zinc-650: #64748b;
+  --color-zinc-600: #475569;
+  --color-zinc-50: #0f172a;
+  --color-zinc-100: #0f172a;
+  --color-zinc-200: #1e293b;
+  --color-zinc-300: #334155;
+  --color-zinc-400: #475569;
+  --color-zinc-500: #64748b;
+  --color-zinc-600: #cbd5e1;
+  --color-zinc-700: #e2e8f0;
+  --color-zinc-800: #f1f5f9;
+  --color-zinc-900: #f8fafc;
+  --color-zinc-950: #ffffff;
+
+  --slate-950: #ffffff;
+  --slate-900: #f8fafc;
+  --slate-800: #e2e8f0;
+  --slate-700: #94a3b8;
+  --slate-600: #64748b;
+  --slate-500: #475569;
+  --slate-400: #334155;
+  --slate-300: #1e293b;
+  --slate-200: #0f172a;
+  --slate-100: #09090b;
+
+  --color-slate-950: #ffffff;
+  --color-slate-900: #f8fafc;
+  --color-slate-800: #e2e8f0;
+  --color-slate-700: #94a3b8;
+  --color-slate-600: #64748b;
+  --color-slate-500: #475569;
+  --color-slate-400: #334155;
+  --color-slate-300: #1e293b;
+  --color-slate-200: #0f172a;
+  --color-slate-100: #09090b;
+}
+
+/* Isolate simulated phone device chassis from light-mode variable overrides */
+#chatreader-root.light-mode #iphone-device-chassis {
+  --neutral-950: #0a0a0a !important;
+  --neutral-900: #171717 !important;
+  --neutral-850: #202020 !important;
+  --neutral-800: #262626 !important;
+  --neutral-750: #353535 !important;
+  --neutral-700: #404040 !important;
+  --neutral-600: #525252 !important;
+  --neutral-500: #737373 !important;
+  --neutral-400: #a3a3a3 !important;
+  --neutral-300: #d4d4d4 !important;
+  --neutral-200: #e5e5e5 !important;
+  --neutral-100: #f5f5f5 !important;
+
+  --color-neutral-950: #0a0a0a !important;
+  --color-neutral-900: #171717 !important;
+  --color-neutral-850: #202020 !important;
+  --color-neutral-800: #262626 !important;
+  --color-neutral-750: #353535 !important;
+  --color-neutral-700: #404040 !important;
+  --color-neutral-600: #525252 !important;
+  --color-neutral-500: #737373 !important;
+  --color-neutral-400: #a3a3a3 !important;
+  --color-neutral-300: #d4d4d4 !important;
+  --color-neutral-200: #e5e5e5 !important;
+  --color-neutral-100: #f5f5f5 !important;
+
+  --zinc-950: #09090b !important;
+  --zinc-900: #18181b !important;
+  --zinc-850: #202024 !important;
+  --zinc-800: #27272a !important;
+  --zinc-750: #39393e !important;
+  --zinc-700: #3f3f46 !important;
+  --zinc-600: #52525b !important;
+  --zinc-500: #71717a !important;
+  --zinc-400: #a1a1aa !important;
+  --zinc-300: #d4d4d8 !important;
+  --zinc-200: #e4e4e7 !important;
+  --zinc-100: #f4f4f5 !important;
+
+  --color-zinc-950: #09090b !important;
+  --color-zinc-900: #18181b !important;
+  --color-zinc-850: #202024 !important;
+  --color-zinc-800: #27272a !important;
+  --color-zinc-750: #39393e !important;
+  --color-zinc-700: #3f3f46 !important;
+  --color-zinc-650: #4b4b52 !important;
+  --color-zinc-600: #52525b !important;
+  --color-zinc-500: #71717a !important;
+  --color-zinc-400: #a1a1aa !important;
+  --color-zinc-300: #d4d4d8 !important;
+  --color-zinc-200: #e4e4e7 !important;
+  --color-zinc-100: #f4f4f5 !important;
+  --color-zinc-50: #fafafa !important;
+
+  --slate-950: #020617 !important;
+  --slate-900: #0f172a !important;
+  --slate-800: #1e293b !important;
+  --slate-700: #334155 !important;
+  --slate-600: #475569 !important;
+  --slate-500: #64748b !important;
+  --slate-400: #94a3b8 !important;
+  --slate-300: #cbd5e1 !important;
+  --slate-200: #e2e8f0 !important;
+  --slate-100: #f1f5f9 !important;
+
+  --color-slate-950: #020617 !important;
+  --color-slate-900: #0f172a !important;
+  --color-slate-800: #1e293b !important;
+  --color-slate-700: #334155 !important;
+  --color-slate-600: #475569 !important;
+  --color-slate-500: #64748b !important;
+  --color-slate-400: #94a3b8 !important;
+  --color-slate-300: #cbd5e1 !important;
+  --color-slate-200: #e2e8f0 !important;
+  --color-slate-100: #f1f5f9 !important;
+}
+
+#chatreader-root.light-mode header {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+#chatreader-root.light-mode header h1 {
+  color: #0f172a !important;
+}
+
+#chatreader-root.light-mode header p {
+  color: #475569 !important;
+}
+
+/* 1. Turn all background-colored blocks, cards, sections into crisp white backgrounds with slate borders, excluding specific dynamic elements */
+#chatreader-root.light-mode :not(#iphone-device-chassis, #iphone-device-chassis *, #hero-canvas-section, #hero-canvas-section *):is(
+  div, section, article, header, footer, aside, ul, li
+):not(
+  button, a, select, option, input, textarea, label, span, p, h1, h2, h3, h4, h5, h6, img, svg, iframe, canvas,
+  button *, a *, select *, option *, input *, textarea *, label *, span *, p *, h1 *, h2 *, h3 *, h4 *, h5 *, h6 *,
+  [class*="bg-[#bfff50]"], [class*="bg-[#bfff00]"], [class*="bg-[#bfff00]/15"], [class*="bg-emerald-"], [class*="bg-rose-"], [class*="bg-red-"], [class*="bg-amber-"], [class*="bg-blue-"], [class*="bg-indigo-"], [class*="bg-[#007aff]"],
+  [class*="bg-[linear-gradient"]
+) {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* 2. Specific print / alternate rows contrast rendering */
+#chatreader-root.light-mode [id^="p-row-"]:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Explicit high-contrast border overrides except inside the iPhone chassis mockup */
+#chatreader-root.light-mode .border-neutral-850:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode .border-neutral-900:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode .border-neutral-800:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode .border-zinc-800:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode .border-\[\#bfff00\]\/20:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode .border-neutral-750:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  border-color: #cbd5e1 !important;
+}
+
+/* 3. Robust rule mapping all white/grey/slate/zinc texts to dark slate in light mode */
+#chatreader-root.light-mode :not(#iphone-device-chassis, #iphone-device-chassis *, #hero-canvas-section, #hero-canvas-section *, button, button *, a, a *, [class*="bg-emerald-"], [class*="bg-[#007aff]"], [class*="bg-[#bfff50]"], [class*="bg-[#bfff00]"], [class*="bg-indigo-"], [class*="bg-blue-"], [class*="bg-rose-"], [class*="bg-red-"], .bg-black, .bg-black *, [class*="bg-black"], [class*="bg-black"] *):is(.text-white, .text-zinc-50, .text-neutral-50, .text-slate-50, .text-slate-100, .text-slate-200, .text-slate-300, .text-zinc-100, .text-zinc-200, .text-zinc-300, .text-neutral-100, .text-neutral-200, .text-neutral-300, .text-gray-100, .text-gray-200, .text-gray-300, .text-neutral-400, .text-zinc-400, .text-slate-400, .text-gray-400, .text-neutral-500, .text-zinc-500, .text-slate-500, .text-gray-500, .text-neutral-600) {
+  color: #1e293b !important;
+}
+
+/* Force dark dark-green for lime accent text in light mode so it remains fully readable */
+#chatreader-root.light-mode .text-\[\#bfff00\]:not(#iphone-device-chassis, #iphone-device-chassis *, .bg-black, .bg-black *, [class*="bg-black"], [class*="bg-black"] *) {
+  color: #15803d !important;
+}
+
+#chatreader-root.light-mode .border-\[\#bfff00\]:not(#iphone-device-chassis, #iphone-device-chassis *, .bg-black, .bg-black *, [class*="bg-black"], [class*="bg-black"] *) {
+  border-color: #15803d !important;
+}
+
+#chatreader-root.light-mode .emerald-500:not(.bg-black, .bg-black *, [class*="bg-black"], [class*="bg-black"] *) {
+  color: #15803d !important;
+}
+
+#chatreader-root.light-mode .bg-\[\#bfff00\]:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  background-color: #bfff50 !important;
+  color: #000000 !important;
+}
+
+#chatreader-root.light-mode #workspace-tabs-bar button:not(.bg-\[\#bfff00\]) {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #475569 !important;
+}
+
+#chatreader-root.light-mode #workspace-tabs-bar button:not(.bg-\[\#bfff00\]):hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+}
+
+#chatreader-root.light-mode #how-to-accordion {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+
+#chatreader-root.light-mode #how-to-accordion p,
+#chatreader-root.light-mode #how-to-accordion li {
+  color: #334155 !important;
+}
+
+#chatreader-root.light-mode #how-to-accordion h4 {
+  color: #0f172a !important;
+}
+
+#chatreader-root.light-mode #intro-handbook-controls {
+  background-image: linear-gradient(to right bottom, #ffffff, #f1f5f9) !important;
+  border-color: #cbd5e1 !important;
+}
+
+#chatreader-root.light-mode #drop-zone {
+  border-color: #94a3b8 !important;
+}
+
+#chatreader-root.light-mode #drop-zone:hover {
+  border-color: #15803d !important;
+  background-color: #f1f5f9 !important;
+}
+
+#chatreader-root.light-mode input,
+#chatreader-root.light-mode textarea,
+#chatreader-root.light-mode select {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Charts and components elements styling in high-contrast light */
+#chatreader-root.light-mode .recharts-cartesian-grid-horizontal line,
+#chatreader-root.light-mode .recharts-cartesian-grid-vertical line {
+  stroke: #e2e8f0 !important;
+}
+
+#chatreader-root.light-mode .recharts-text {
+  fill: #475569 !important;
+}
+
+#chatreader-root.light-mode .recharts-default-tooltip {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+
+/* Modal details, dialogue components and overlays */
+#chatreader-root.light-mode [role="dialog"],
+#chatreader-root.light-mode .popover-content {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #cbd5e1 !important;
+}
+
+/* Explicit high-contrast theme overrides for elements inside the glowing waves hero section in light mode */
+#chatreader-root.light-mode #hero-canvas-section h1 {
+  color: #0d1117 !important;
+}
+
+#chatreader-root.light-mode #hero-canvas-section h1 span {
+  color: transparent !important;
+  background-clip: text !important;
+  -webkit-background-clip: text !important;
+}
+
+#chatreader-root.light-mode #hero-canvas-section p {
+  color: #334155 !important;
+}
+
+#chatreader-root.light-mode #hero-canvas-section li {
+  background-color: #f0fdf4 !important;
+  color: #14532d !important;
+  border-color: #86efac !important;
+}
+
+#chatreader-root.light-mode #hero-canvas-section button[class*="border-slate-300"],
+#chatreader-root.light-mode #hero-canvas-section button.variant-outline {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+  border-color: #0f172a !important;
+}
+
+#chatreader-root.light-mode #hero-canvas-section button[class*="border-slate-300"]:hover,
+#chatreader-root.light-mode #hero-canvas-section button.variant-outline:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #334155 !important;
+}
+
+/* Custom premium light-green boxes with depth for cards/bento panels in light mode */
+#chatreader-root.light-mode #dashboard-banner,
+#chatreader-root.light-mode #stats-bento-grid > div,
+#chatreader-root.light-mode #participants-ranked-panel,
+#chatreader-root.light-mode #conversation-topology-panel,
+#chatreader-root.light-mode #timeline-zoom-panel,
+#chatreader-root.light-mode #hourly-activity-chart-panel,
+#chatreader-root.light-mode #weekly-density-panel,
+#chatreader-root.light-mode #top-emojis-panel,
+#chatreader-root.light-mode #top-words-panel,
+#chatreader-root.light-mode #sample-hackathon-trigger,
+#chatreader-root.light-mode #sample-family-trigger,
+#chatreader-root.light-mode #encryption-disclaimer,
+#chatreader-root.light-mode #how-to-accordion,
+#chatreader-root.light-mode [id^="p-row-"]:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  background-color: #f0fdf4 !important; /* Soft premium mint-green instead of harsh plain white */
+  border-color: #86efac !important; /* Premium light green borders to match dark mode neon accent */
+  color: #14532d !important; /* Highly readable dark woodland green text */
+  box-shadow: 0 4px 20px rgba(4, 120, 87, 0.05) !important;
+}
+
+/* Fix inner sub-elements and labels inside premium green cards for maximum contrast and readability */
+#chatreader-root.light-mode #dashboard-banner *,
+#chatreader-root.light-mode #stats-bento-grid > div *,
+#chatreader-root.light-mode #participants-ranked-panel *:not(a, .bg-\[\#bfff00\], .bg-\[\#bfff00\] *),
+#chatreader-root.light-mode #conversation-topology-panel *:not(a, canvas, .recharts-text, select, option),
+#chatreader-root.light-mode #timeline-zoom-panel *:not(button, button *, input, textarea, select, option, .zoom-badge, .zoom-badge *, .zoom-indicator, .zoom-indicator *),
+#chatreader-root.light-mode #hourly-activity-chart-panel *:not(.recharts-text, line, path, .metric-badge, .metric-badge *),
+#chatreader-root.light-mode #weekly-density-panel *:not(.recharts-text, line, path),
+#chatreader-root.light-mode #top-emojis-panel *:not([id^="emoji-box-"], [id^="emoji-box-"] *),
+#chatreader-root.light-mode #top-words-panel *,
+#chatreader-root.light-mode #sample-hackathon-trigger *,
+#chatreader-root.light-mode #sample-family-trigger *,
+#chatreader-root.light-mode #encryption-disclaimer *,
+#chatreader-root.light-mode #how-to-accordion * {
+  color: #14532d !important; /* Solid dark forest green */
+}
+
+/* Under bento metrics grid details, keep numbers prominent and deep green */
+#chatreader-root.light-mode #stats-bento-grid p {
+  color: #115e59 !important; /* Rich deep compression teal-green */
+}
+
+/* Keep the icons inside bento cells legible and matching green style */
+#chatreader-root.light-mode #stats-bento-grid div[class*="bg-neutral-900"] {
+  background-color: #dcfce7 !important;
+  border-color: #8eefac !important;
+  color: #15803d !important;
+}
+
+#chatreader-root.light-mode #stats-bento-grid div[class*="bg-neutral-900"] svg {
+  stroke: #15803d !important;
+}
+
+/* Also give inner individual emoji boxes a beautiful green-accent boundary and clean background */
+#chatreader-root.light-mode [id^="emoji-box-"] {
+  background-color: #ffffff !important;
+  border-color: #bbf7d0 !important;
+}
+
+#chatreader-root.light-mode [id^="emoji-box-"]:hover {
+  background-color: #f0fdf4 !important;
+  border-color: #22c55e !important;
+}
+
+/* ==========================================
+   ROBUST HIGH-CONTRAST ACCESSIBILITY GUIDELINES (LIGHT-MODE)
+   ========================================== */
+
+/* 1. Ensure dark text utility classes are robustly dark and readable in light mode */
+#chatreader-root.light-mode :not(#iphone-device-chassis, #iphone-device-chassis *, button, button *, a, a *, [class*="bg-emerald-"], [class*="bg-indigo-"], [class*="bg-[#007aff]"], [class*="bg-[#bfff50]"], [class*="bg-[#bfff00]"], [class*="bg-blue-"], .bg-black, .bg-black *, [class*="bg-black"], [class*="bg-black"] *):is(
+  .text-slate-600, .text-slate-650, .text-slate-700, .text-slate-750, .text-slate-800, .text-slate-850, .text-slate-900, .text-slate-950,
+  .text-zinc-600, .text-zinc-650, .text-zinc-700, .text-zinc-750, .text-zinc-800, .text-zinc-850, .text-zinc-900, .text-zinc-950,
+  .text-neutral-600, .text-neutral-650, .text-neutral-700, .text-neutral-750, .text-neutral-800, .text-neutral-850, .text-neutral-905, .text-neutral-900, .text-neutral-950,
+  .text-gray-600, .text-gray-650, .text-gray-700, .text-gray-750, .text-gray-800, .text-gray-850, .text-gray-900, .text-gray-950
+) {
+  color: #0f172a !important; /* Extremely high contrast dark primary text */
+}
+
+/* 2. Deep rich indigo text values for supreme readability */
+#chatreader-root.light-mode :not(#iphone-device-chassis, #iphone-device-chassis *, .bg-[#007aff], .bg-indigo-600, .bg-indigo-505, [class*="bg-indigo-"]):is(
+  .text-indigo-400, .text-indigo-500, .text-indigo-600, .text-indigo-700, .text-indigo-750, .text-indigo-800, .text-indigo-900
+) {
+  color: #1e1b4b !important; /* Deepest indigo-950 for phenomenal contrast! */
+}
+
+/* 3. Deep rich amber text values for category and temporal markers */
+#chatreader-root.light-mode :not(#iphone-device-chassis, #iphone-device-chassis *, .bg-black, .bg-black *, [class*="bg-black"]):is(
+  .text-amber-300, .text-amber-400, .text-amber-500, .text-amber-600, .text-amber-700
+) {
+  color: #78350f !important; /* Rich amber-900 / brown for extreme contrast and readability */
+}
+
+#chatreader-root.light-mode :not(#iphone-device-chassis, #iphone-device-chassis *, .bg-black, .bg-black *, [class*="bg-black"]):is(
+  .border-amber-400\/25, .border-amber-500\/25
+) {
+  border-color: #b45309 !important;
+}
+
+/* 4. Fix placeholder opacity and contrast inside white input fields */
+#chatreader-root.light-mode input::placeholder,
+#chatreader-root.light-mode textarea::placeholder,
+#chatreader-root.light-mode select::placeholder {
+  color: #64748b !important;
+  opacity: 1 !important;
+}
+
+/* 5. Force standard primary dark buttons (e.g. bg-slate-900 or bg-black) to stay dark inside light mode pages */
+#chatreader-root.light-mode button.bg-slate-900:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode button.bg-black:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode .bg-black button:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  background-color: #1e293b !important;
+  border-color: #1e293b !important;
+  color: #ffffff !important;
+}
+#chatreader-root.light-mode button.bg-slate-900:not(#iphone-device-chassis, #iphone-device-chassis *):hover,
+#chatreader-root.light-mode button.bg-black:not(#iphone-device-chassis, #iphone-device-chassis *):hover {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+}
+
+/* 6. High-Contrast Interactive Theme Toggles list inside light mode */
+#chatreader-root.light-mode #theme-toggles button {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+#chatreader-root.light-mode #theme-toggles button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+#chatreader-root.light-mode #theme-toggles button[id^="theme-btn-lando-neon"],
+#chatreader-root.light-mode #theme-toggles button[id^="theme-btn-"][class*="bg-[#bfff00]"] {
+  background-color: #bfff50 !important;
+  color: #000000 !important;
+  border-color: #16a34a !important;
+  box-shadow: 0 4px 12px rgba(22, 163, 74, 0.15) !important;
+}
+
+/* 7. Fully custom high-contrast light mode styling for Stacked Circular Footer */
+#chatreader-root.light-mode #app-footer {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+#chatreader-root.light-mode #app-footer * {
+  color: #1e293b !important;
+}
+#chatreader-root.light-mode #app-footer button {
+  background-color: #f1f5f9 !important;
+  border-color: #cbd5e1 !important;
+  color: #0f172a !important;
+}
+#chatreader-root.light-mode #app-footer button:hover {
+  background-color: #e2e8f0 !important;
+  color: #e11d48 !important; /* Muted rose highlight on cache clear button */
+}
+#chatreader-root.light-mode #app-footer span.text-emerald-400 {
+  color: #15803d !important; /* Green matching */
+}
+#chatreader-root.light-mode #app-footer span[class*="bg-emerald-950/20"] {
+  background-color: #dcfce7 !important;
+  border-color: #86efac !important;
+}
+
+/* 8. Fix nested dark-theme cards inside about-modal or dialog modules in light mode */
+#chatreader-root.light-mode [role="dialog"] div.bg-black {
+  background-color: #f8fafc !important;
+  border-color: #cbd5e1 !important;
+}
+#chatreader-root.light-mode [role="dialog"] div.bg-black * {
+  color: #1e293b !important;
+}
+
+/* ========================================================
+   CONTRAST FIGHTER - HIGH CONTRAST LIGHT MODE ACCESSIBILITY
+   ======================================================== */
+#chatreader-root.light-mode [class*="emoji"] {
+  color: #1A1A1A !important;
+  font-weight: bold !important;
+}
+#chatreader-root.light-mode [class*="metric"]:not(.metric-badge) {
+  color: #2D5A2D !important;
+  font-weight: bold !important;
+}
+
+/* 1. Isolate replica devices, theme selections, density controls, and headers from generic green button styling */
+#chatreader-root.light-mode button:not(
+  #theme-btn-lando-neon,
+  #theme-btn-ios-dark,
+  #theme-btn-ios-light,
+  #theme-btn-cosmic,
+  [id^="theme-btn-"],
+  #theme-toggles button,
+  #view-options button,
+  #active-chat-theme *,
+  #trigger-export-dialog-btn,
+  #iphone-device-chassis,
+  #iphone-device-chassis *,
+  #theme-toggler,
+  #theme-toggler *,
+  [id^="select-format-"],
+  [id^="pdf-theme-preset-"],
+  #export-close-btn,
+  #footer-scroll-top-btn,
+  #footer-purge-cache-btn,
+  #final-preview-download-btn
+) {
+  background: #00B050 !important;
+  color: #FFFFFF !important;
+  font-weight: bold !important;
+  border: 1px solid #00863d !important;
+}
+#chatreader-root.light-mode button:not(
+  #theme-btn-lando-neon,
+  #theme-btn-ios-dark,
+  #theme-btn-ios-light,
+  #theme-btn-cosmic,
+  [id^="theme-btn-"],
+  #theme-toggles button,
+  #view-options button,
+  #active-chat-theme *,
+  #trigger-export-dialog-btn,
+  #iphone-device-chassis,
+  #iphone-device-chassis *,
+  #theme-toggler,
+  #theme-toggler *,
+  [id^="select-format-"],
+  [id^="pdf-theme-preset-"],
+  #export-close-btn,
+  #footer-scroll-top-btn,
+  #footer-purge-cache-btn,
+  #final-preview-download-btn
+):hover {
+  background: #00863d !important;
+  color: #FFFFFF !important;
+}
+
+/* 2. Style simulator theme selection buttons to provide beautiful, clear feedback */
+#chatreader-root.light-mode #theme-toggles button {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border-color: #cbd5e1 !important;
+}
+#chatreader-root.light-mode #theme-toggles button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+#chatreader-root.light-mode #theme-toggles button[class*="bg-[#bfff00]"],
+#chatreader-root.light-mode #theme-toggles button[id^="theme-btn-lando-neon"] {
+  background-color: #00B050 !important;
+  color: #ffffff !important;
+  border-color: #00863d !important;
+  box-shadow: 0 4px 12px rgba(0, 176, 80, 0.25) !important;
+  font-weight: 900 !important;
+}
+
+/* 3. Style density display selector chips */
+#chatreader-root.light-mode #view-options button {
+  background-color: #ffffff !important;
+  color: #334155 !important;
+  border: 1px solid #cbd5e1 !important;
+}
+#chatreader-root.light-mode #view-options button:hover {
+  background-color: #f1f5f9 !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+#chatreader-root.light-mode #view-options button[class*="text-[#bfff00]"],
+#chatreader-root.light-mode #view-options button[class*="bg-[#bfff00]/20"] {
+  background-color: #00B050 !important;
+  color: #ffffff !important;
+  border-color: #00863d !important;
+  font-weight: 900 !important;
+}
+
+/* 4. Style inputs, textareas, and select components while protecting the simulated mobile interface */
+#chatreader-root.light-mode input:not([type="checkbox"]):not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode textarea:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode select:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  background: #FFFFFF !important;
+  color: #1A1A1A !important;
+  border: 2px solid #00B050 !important;
+}
+
+/* 5. Style labels and headings globally in light mode EXCEPT within the custom mobile simulator device chassis */
+#chatreader-root.light-mode label:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode h1:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode h2:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode h3:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode h4:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode h5:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode h6:not(#iphone-device-chassis, #iphone-device-chassis *),
+#chatreader-root.light-mode span.font-bold:not(#iphone-device-chassis, #iphone-device-chassis *) {
+  color: #1A1A1A !important;
+  font-weight: 600 !important;
+}
+
+/* 6. Improve high-contrast light mode core theme switcher visual feedback of the application */
+#chatreader-root.light-mode #theme-toggler {
+  background-color: #ffffff !important;
+  color: #00b050 !important;
+  border: 2px solid #00b050 !important;
+  font-weight: 800 !important;
+  border-radius: 8px !important;
+  box-shadow: 0 4px 12px rgba(0, 176, 80, 0.15) !important;
+  transition: all 0.2s ease-in-out !important;
+}
+#chatreader-root.light-mode #theme-toggler:hover {
+  background-color: #f0fdf4 !important;
+  border-color: #00863d !important;
+  color: #00863d !important;
+  transform: translateY(-1.5px) !important;
+}
+#chatreader-root.light-mode #theme-toggler svg.text-indigo-400 {
+  color: #00b050 !important;
+}
+#chatreader-root.light-mode #theme-toggler:hover svg.text-indigo-400 {
+  color: #00863d !important;
+}
+#chatreader-root.light-mode #theme-toggler * {
+  color: #00b050 !important;
+}
+#chatreader-root.light-mode #theme-toggler:hover * {
+  color: #00863d !important;
+}
+
+/* 7. Reset the generic yellow/orange zoom wildcard and apply highly readable emerald/forest green styles */
+#chatreader-root.light-mode [class*="zoom"] {
+  background: transparent;
+  color: inherit;
+  font-weight: normal;
+}
+#chatreader-root.light-mode .zoom-panel {
+  background-color: #ffffff !important;
+  border-color: #cbd5e1 !important;
+}
+#chatreader-root.light-mode .zoom-text {
+  background-color: #f0fdf4 !important; /* soft mint-green background */
+  color: #14532d !important; /* rich, deeply legible forest green text */
+  border: 1px solid #bbf7d0 !important;
+  padding: 8px 12px !important;
+  border-radius: 4px !important;
+  font-weight: 700 !important;
+  display: inline-block !important;
+  line-height: 1.5 !important;
+}
+#chatreader-root.light-mode .zoom-badge,
+#chatreader-root.light-mode .zoom-indicator {
+  background-color: #15803d !important; /* vibrant, high-contrast forest green background */
+  color: #ffffff !important; /* white reader text */
+  padding: 4px 10px !important;
+  border-radius: 4px !important;
+  font-weight: 800 !important;
+  border: 1px solid #166534 !important;
+  display: inline-flex !important;
+  line-height: 1 !important;
+}
+#chatreader-root.light-mode .zoom-control {
+  background-color: #ffffff !important;
+  color: #15803d !important;
+  border: 1.5px solid #15803d !important;
+  font-weight: bold !important;
+}
+#chatreader-root.light-mode .zoom-control:hover {
+  background-color: #f0fdf4 !important;
+  border-color: #166534 !important;
+  color: #166534 !important;
+}
+
+/* 8. Style the LIVE DATA FEED badge inside the Hourly Dialogue Chart in light mode with prominent green */
+#chatreader-root.light-mode .metric-badge {
+  background-color: #15803d !important; /* robust Forest Green */
+  color: #ffffff !important; /* pure white contrast text */
+  border: 1px solid #166534 !important;
+  font-weight: 800 !important;
+  padding: 3px 8px !important;
+  border-radius: 4px !important;
+  display: inline-flex !important;
+  line-height: 1 !important;
+}
+
+/* 9. CRITICAL HIGH SPECIFICITY COLOR FIX FOR EMBEDDED BADGES (PREVENTS PANELS FROM TURNING TEXT DARK GREEN) */
+#chatreader-root.light-mode #timeline-zoom-panel .zoom-badge,
+#chatreader-root.light-mode #timeline-zoom-panel .zoom-indicator,
+#chatreader-root.light-mode #hourly-activity-chart-panel .metric-badge,
+#chatreader-root.light-mode .zoom-badge,
+#chatreader-root.light-mode .zoom-indicator,
+#chatreader-root.light-mode .metric-badge {
+  color: #ffffff !important;
+  font-weight: 900 !important;
+}
+
+/* 10. DARKER, PREMIUM CHART GRAPH ELEMENTS IN LIGHT MODE */
+#chatreader-root.light-mode #hourly-activity-chart-panel rect:not(.fill-transparent):not(.fill-purple-500) {
+  fill: #15803d !important; /* Solid elegant forest green instead of blazing fluorescent lime */
+}
+#chatreader-root.light-mode #hourly-activity-chart-panel rect:not(.fill-transparent):not(.fill-purple-500):hover {
+  fill: #166534 !important; /* even darker and richer feedback on hover */
+}
+
+/* Color weekly density graphs to use dark robust emerald gradients */
+#chatreader-root.light-mode #weekly-density-panel #weekly-chart-list [class*="from-[#bfff00]/70"] {
+  background-image: linear-gradient(to right, #16a34a, #15803d) !important;
+}
+#chatreader-root.light-mode #weekly-density-panel #weekly-chart-list div.group:hover [class*="from-[#bfff00]/70"] {
+  background-image: linear-gradient(to right, #15803d, #14532d) !important;
+}
+#chatreader-root.light-mode #weekly-density-panel span.group-hover\:text-\[\#bfff00\]:hover,
+#chatreader-root.light-mode #weekly-density-panel :hover > span.group-hover\:text-\[\#bfff00\] {
+  color: #15803d !important;
+}
+
+/* Color timeline Zoom panel spark-line metrics to use rich dark green */
+#chatreader-root.light-mode #timeline-zoom-panel #timeline-spark-line {
+  stroke: #15803d !important;
+}
+#chatreader-root.light-mode #timeline-zoom-panel #timeline-single-day-group line {
+  stroke: #15803d !important;
+}
+#chatreader-root.light-mode #timeline-zoom-panel circle[id^="timeline-point-dot-"]:not([class*="fill-purple-400"]) {
+  fill: #15803d !important;
+}
+#chatreader-root.light-mode #timeline-zoom-panel stop {
+  stop-color: #15803d !important;
+}
+
+
+/* ==========================================================================
+   UNIFIED CONTRAST & CUSTOM BEAUTIFICATION OVERRIDES (PROMPT USER FIXES)
+   ========================================================================== */
+
+/* 1. Make sure the Peak Chat Day badge on Monday in the Weekly Density Chart/panel is white and readable */
+#chatreader-root.light-mode #weekly-density-panel [class*="text-purple-"],
+#chatreader-root.light-mode #weekly-density-panel .text-purple-400 {
+  color: #ffffff !important; /* Pristine white text */
+}
+#chatreader-root.light-mode #weekly-density-panel span.bg-purple-950\/80 {
+  background-color: #6b21a8 !important; /* Rich deeper dark purple background so white letters pop beautifully */
+  border-color: #581c87 !important;
+  color: #ffffff !important;
+}
+
+/* 2. Style the format options in the Export Modal beautifully in light mode */
+/* Unselected format cards */
+#chatreader-root.light-mode #export-modal-body [id^="select-format-"] {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #334155 !important;
+}
+#chatreader-root.light-mode #export-modal-body [id^="select-format-"] p {
+  color: #64748b !important;
+}
+#chatreader-root.light-mode #export-modal-body [id^="select-format-"] svg {
+  color: #64748b !important;
+}
+#chatreader-root.light-mode #export-modal-body [id^="select-format-"] span:not([class*="bg-"]) {
+  color: #1e293b !important;
+}
+#chatreader-root.light-mode #export-modal-body [id^="select-format-"]:hover {
+  background-color: #f8fafc !important;
+  border-color: #94a3b8 !important;
+}
+
+/* Ensure the .pdf, .html, and .txt format badges (pills) inside BOTH selected and unselected cards are white and readable with darker background colors */
+#chatreader-root #export-modal-body [id^="select-format-"] span[class*="bg-sky-"],
+#chatreader-root #export-modal-body [id^="select-format-"] span[class*="bg-emerald-"],
+#chatreader-root #export-modal-body [id^="select-format-"] span[class*="bg-yellow-"] {
+  color: #ffffff !important; /* Pure white text is highly readable */
+  font-weight: 700 !important;
+  text-shadow: 0 1px 1px rgba(0,0,0,0.35) !important;
+}
+
+#chatreader-root #export-modal-body [id^="select-format-"] span[class*="bg-sky-"] {
+  background-color: #0c4a6e !important; /* Dark sky blue-900 */
+  border-color: #0284c7 !important;     /* border-sky-600 */
+}
+
+#chatreader-root #export-modal-body [id^="select-format-"] span[class*="bg-emerald-"] {
+  background-color: #064e3b !important; /* Dark emerald-900 */
+  border-color: #059669 !important;     /* border-emerald-600 */
+}
+
+#chatreader-root #export-modal-body [id^="select-format-"] span[class*="bg-yellow-"] {
+  background-color: #713f12 !important; /* Dark amber/brown-900 */
+  border-color: #d97706 !important;     /* border-amber-600 */
+}
+
+/* Selected format cards in light mode (Active selection)
+   Make the background colors darker a bit (rich forest green) and circled letters bright white and readable */
+#chatreader-root.light-mode #export-modal-body #select-format-pdf-card[class*="bg-emerald-50"],
+#chatreader-root.light-mode #export-modal-body #select-format-html-card[class*="bg-emerald-50"],
+#chatreader-root.light-mode #export-modal-body #select-format-txt-card[class*="bg-emerald-50"] {
+  background-color: #15803d !important; /* Premium rich, darker green background */
+  border: 2px solid #14532d !important;
+  box-shadow: 0 4px 12px rgba(21, 128, 61, 0.15) !important;
+}
+#chatreader-root.light-mode #export-modal-body #select-format-pdf-card[class*="bg-emerald-50"] *,
+#chatreader-root.light-mode #export-modal-body #select-format-html-card[class*="bg-emerald-50"] *,
+#chatreader-root.light-mode #export-modal-body #select-format-txt-card[class*="bg-emerald-50"] * {
+  color: #ffffff !important; /* Force all nested titles and descriptions to be bright white and readable! */
+  text-shadow: 0 1px 2px rgba(0,0,0,0.2) !important;
+}
+#chatreader-root.light-mode #export-modal-body #select-format-pdf-card[class*="bg-emerald-50"] p,
+#chatreader-root.light-mode #export-modal-body #select-format-html-card[class*="bg-emerald-50"] p,
+#chatreader-root.light-mode #export-modal-body #select-format-txt-card[class*="bg-emerald-50"] p {
+  color: #f0fdf4 !important; /* Beautiful readable pale-green description text */
+}
+#chatreader-root.light-mode #export-modal-body #select-format-pdf-card[class*="bg-emerald-50"] svg,
+#chatreader-root.light-mode #export-modal-body #select-format-html-card[class*="bg-emerald-50"] svg,
+#chatreader-root.light-mode #export-modal-body #select-format-txt-card[class*="bg-emerald-50"] svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+/* Style format badges (.pdf, .html, .txt) on selected format cards so they look perfect */
+#chatreader-root.light-mode #export-modal-body #select-format-pdf-card[class*="bg-emerald-50"] span[class*="bg-sky-"],
+#chatreader-root.light-mode #export-modal-body #select-format-html-card[class*="bg-emerald-50"] span[class*="bg-emerald-"],
+#chatreader-root.light-mode #export-modal-body #select-format-txt-card[class*="bg-emerald-50"] span[class*="bg-yellow-"] {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  border: 1px solid rgba(255, 255, 255, 0.4) !important;
+  color: #ffffff !important;
+}
+
+/* 3. Style close button and theme preset triggers inside export modal */
+#chatreader-root.light-mode #export-modal-body #export-close-btn {
+  background-color: #ffffff !important;
+  color: #e11d48 !important;
+  border: 1px solid #fda4af !important;
+}
+#chatreader-root.light-mode #export-modal-body #export-close-btn:hover {
+  background-color: #fff1f2 !important;
+  color: #be123c !important;
+  border-color: #f43f5e !important;
+}
+
+/* Customize active PDF style button presets */
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-dark,
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-light {
+  text-shadow: none !important;
+  font-weight: bold !important;
+}
+/* Unselected */
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-dark:not([class*="bg-slate-900"]),
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-light:not([class*="bg-slate-900"]) {
+  background-color: #ffffff !important;
+  color: #64748b !important;
+  border: 1px solid #cbd5e1 !important;
+}
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-dark:not([class*="bg-slate-900"]):hover,
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-light:not([class*="bg-slate-900"]):hover {
+  background-color: #f8fafc !important;
+  color: #0f172a !important;
+  border-color: #94a3b8 !important;
+}
+/* Active style (has bg-slate-900) */
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-dark[class*="bg-slate-900"] {
+  background-color: #0f172a !important; /* solid charcoal-black */
+  color: #ffffff !important;
+  border: 1px solid #0f172a !important;
+}
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-light[class*="bg-slate-900"] {
+  background-color: #f1f5f9 !important; /* ultra clean gray */
+  color: #0f172a !important;
+  border: 1px solid #cbd5e1 !important;
+}
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-dark[class*="bg-slate-900"] *,
+#chatreader-root.light-mode #export-modal-body #pdf-theme-preset-light[class*="bg-slate-900"] * {
+  color: inherit !important;
+}
+
+/* Style bottom primary yellow Download button inside modal in light mode */
+#chatreader-root.light-mode #export-modal-body #final-preview-download-btn {
+  background-color: #bfff00 !important;
+  color: #000000 !important;
+  border: 1px solid #a3d900 !important;
+}
+#chatreader-root.light-mode #export-modal-body #final-preview-download-btn:hover {
+  background-color: #000000 !important;
+  color: #bfff00 !important;
+}
+#chatreader-root.light-mode #export-modal-body #final-preview-download-btn * {
+  color: inherit !important;
+}
+
+/* 4. Restore the brand lime-green ChatReader footer scroll-to-top button logo shape to be visible */
+#chatreader-root.light-mode #app-footer #footer-scroll-top-btn {
+  background-color: #bfff00 !important; /* Brand high-vis yellow-green */
+  border: 1px solid #a3d900 !important;
+  box-shadow: 0 4px 16px rgba(191, 255, 0, 0.2) !important;
+}
+#chatreader-root.light-mode #app-footer #footer-scroll-top-btn svg {
+  color: #000000 !important; /* Force black logo inside logo badge */
+  fill: #000000 !important;
+}
+#chatreader-root.light-mode #app-footer #footer-scroll-top-btn svg * {
+  color: #000000 !important;
+  fill: #000000 !important;
+}
+
+/* Restore Purge Cache button in light mode footer */
+#chatreader-root.light-mode #app-footer #footer-purge-cache-btn {
+  background-color: #ffffff !important;
+  border: 1px solid #cbd5e1 !important;
+  color: #e11d48 !important;
+}
+#chatreader-root.light-mode #app-footer #footer-purge-cache-btn:hover {
+  background-color: #fff1f2 !important;
+  border-color: #fca5a5 !important;
+  color: #be123c !important;
+}
+#chatreader-root.light-mode #app-footer #footer-purge-cache-btn * {
+  color: inherit !important;
+}
+
+/* Beautiful, high-contrast, professional colored icon boxes (logos) with pure white icons */
+#chatreader-root #export-modal-body #select-format-pdf-card > div:first-child {
+  background-color: #0284c7 !important; /* Sky Blue */
+  border-color: #0369a1 !important;
+}
+#chatreader-root #export-modal-body #select-format-pdf-card > div:first-child svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+#chatreader-root #export-modal-body #select-format-html-card > div:first-child {
+  background-color: #059669 !important; /* Emerald Green */
+  border-color: #047857 !important;
+}
+#chatreader-root #export-modal-body #select-format-html-card > div:first-child svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+#chatreader-root #export-modal-body #select-format-txt-card > div:first-child {
+  background-color: #d97706 !important; /* Amber Orange */
+  border-color: #b45309 !important;
+}
+#chatreader-root #export-modal-body #select-format-txt-card > div:first-child svg {
+  color: #ffffff !important;
+  stroke: #ffffff !important;
+}
+
+/* Fix text contrast in the dark metrics grid card inside #dashboard-banner in light mode */
+#chatreader-root.light-mode #dashboard-banner div.bg-black,
+#chatreader-root.light-mode #dashboard-banner div.bg-black *:not(#download-stats-btn, #download-stats-btn *) {
+  color: #000000 !important; /* Force all labels and data inside the card to be crisp, high-contrast, fully visible black! */
+}
+
+/* Make sure separator line is visible in light mode */
+#chatreader-root.light-mode #dashboard-banner div.bg-black div.w-px {
+  background-color: #cbd5e1 !important;
+}
+
+/* Specifically style the download stats button inside there to have high contrast */
+#chatreader-root.light-mode #dashboard-banner #download-stats-btn {
+  background-color: #bfff00 !important; /* High-contrast bright lime green background */
+  color: #000000 !important; /* Bold black text on lime background */
+  border-color: #bfff00 !important;
+}
+#chatreader-root.light-mode #dashboard-banner #download-stats-btn:hover {
+  background-color: #000000 !important; /* Elegant black back-hover */
+  color: #bfff00 !important;
+  border-color: #bfff00 !important;
+}
+#chatreader-root.light-mode #dashboard-banner #download-stats-btn * {
+  color: inherit !important; /* Ensure children like icons inherit color properly */
+}
+

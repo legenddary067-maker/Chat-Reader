@@ -1055,32 +1055,55 @@ ${messageRowsHtml}
           onClick={() => setIsOpen(false)}
         >
           <div 
-            className="w-full max-w-6xl h-[92vh] sm:h-[86vh] bg-[#0c0c0e] border border-neutral-800 rounded-none shadow-2xl overflow-hidden flex flex-col md:flex-row justify-start"
+            className={`w-full max-w-6xl h-[92vh] sm:h-[86vh] rounded-none shadow-2xl overflow-hidden flex flex-col md:flex-row justify-start border ${
+              isLight 
+                ? 'bg-white border-slate-250 text-slate-900' 
+                : 'bg-[#0c0c0e] border-neutral-800'
+            }`}
             id="export-modal-body"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Left Control Column panel */}
-            <div className="w-full md:w-[380px] shrink-0 md:border-r border-neutral-900 bg-[#09090b] flex flex-col justify-between h-full overflow-hidden" id="preview-control-panel">
+            <div className={`w-full md:w-[380px] shrink-0 md:border-r flex flex-col justify-between h-full overflow-hidden ${
+              isLight 
+                ? 'bg-slate-50 border-slate-200' 
+                : 'bg-[#09090b] border-neutral-900'
+            }`} id="preview-control-panel">
               
               {/* Selector branding & statistics heading */}
-              <div className="p-5 border-b border-neutral-900 bg-black/40 space-y-3 shrink-0">
+              <div className={`p-5 border-b space-y-3 shrink-0 ${
+                isLight ? 'bg-slate-100/50 border-slate-200' : 'bg-black/40 border-neutral-900'
+              }`}>
                 <div className="flex justify-between items-center">
-                  <span className="text-[8px] bg-[#bfff00]/15 text-[#bfff00] border border-[#bfff00]/20 font-mono font-bold px-2 py-0.5 uppercase tracking-widest">
+                  <span className={`text-[8px] font-mono font-bold px-2 py-0.5 uppercase tracking-widest border ${
+                    isLight 
+                      ? 'bg-slate-100 text-slate-800 border-slate-300' 
+                      : 'bg-[#bfff00]/15 text-[#bfff00] border-[#bfff00]/20'
+                  }`}>
                     STUDIO WORKSPACE
                   </span>
                   <button 
                     type="button"
                     onClick={() => setIsOpen(false)}
-                    className="text-neutral-500 hover:text-white font-mono text-[9px] hover:bg-neutral-900 px-2 py-1 uppercase tracking-wider border border-neutral-850 cursor-pointer transition-all"
+                    className={`font-mono text-[9px] px-2 py-1 uppercase tracking-wider border cursor-pointer transition-all ${
+                      isLight 
+                        ? 'text-slate-600 hover:text-slate-900 border-slate-250 hover:bg-slate-100' 
+                        : 'text-neutral-500 hover:text-white border-neutral-850 hover:bg-neutral-900'
+                    }`}
+                    id="export-close-btn"
                   >
                     ✕ CLOSE
                   </button>
                 </div>
                 <div>
-                  <h3 className="text-xs font-black text-white uppercase tracking-wider font-mono">
+                  <h3 className={`text-xs font-black uppercase tracking-wider font-mono ${
+                    isLight ? 'text-slate-900' : 'text-white'
+                  }`}>
                     DOWNLOAD CHATBOOK
                   </h3>
-                  <p className="text-[10px] text-neutral-500 mt-1.5 font-mono uppercase truncate">
+                  <p className={`text-[10px] mt-1.5 font-mono uppercase truncate ${
+                    isLight ? 'text-slate-600' : 'text-neutral-500'
+                  }`}>
                     ARCHIVE: {chatTitle.replace(/\s+/g, '_') || 'chat'}
                   </p>
                 </div>
@@ -1088,7 +1111,9 @@ ${messageRowsHtml}
 
               {/* Selection Options Frame */}
               <div className="p-5 space-y-4 flex-1 overflow-y-auto min-h-0">
-                <span className="text-[9px] font-mono text-neutral-500 tracking-wider uppercase font-bold block mb-1">
+                <span className={`text-[9px] font-mono tracking-wider uppercase font-bold block mb-1 ${
+                  isLight ? 'text-slate-500' : 'text-neutral-400'
+                }`}>
                   1. CHOOSE DOWNLOAD FORMAT
                 </span>
 
@@ -1097,27 +1122,41 @@ ${messageRowsHtml}
                   type="button"
                   onClick={() => setSelectedFormat('pdf')}
                   className={`w-full text-left p-3.5 transition-all duration-200 flex gap-3 cursor-pointer outline-hidden items-start border ${
-                    selectedFormat === 'pdf' 
-                      ? 'bg-neutral-900/80 border-[#bfff00]/50 shadow-md ring-1 ring-[#bfff00]/20' 
-                      : 'bg-neutral-950/40 border-neutral-850 hover:bg-[#121214] hover:border-neutral-700'
+                    isLight
+                      ? selectedFormat === 'pdf'
+                        ? 'bg-emerald-50 border-emerald-500 shadow-xs ring-1 ring-emerald-200'
+                        : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                      : selectedFormat === 'pdf' 
+                        ? 'bg-neutral-900/80 border-[#bfff00]/50 shadow-md ring-1 ring-[#bfff00]/20' 
+                        : 'bg-neutral-950/40 border-neutral-850 hover:bg-[#121214] hover:border-neutral-700'
                   }`}
                   id="select-format-pdf-card"
                 >
                   <div className={`w-8 h-8 rounded-sm flex items-center justify-center shrink-0 border ${
-                    selectedFormat === 'pdf' ? 'bg-[#bfff00]/15 border-[#bfff00]/25' : 'bg-neutral-900 border-neutral-800'
+                    isLight
+                      ? selectedFormat === 'pdf' ? 'bg-emerald-100 border-emerald-300' : 'bg-slate-100 border-slate-250'
+                      : selectedFormat === 'pdf' ? 'bg-[#bfff00]/15 border-[#bfff00]/25' : 'bg-neutral-900 border-neutral-800'
                   }`}>
-                    <Printer className={`w-4 h-4 ${selectedFormat === 'pdf' ? 'text-[#bfff00]' : 'text-zinc-500'}`} />
+                    <Printer className={`w-4 h-4 ${
+                      isLight
+                        ? selectedFormat === 'pdf' ? 'text-emerald-700' : 'text-slate-500'
+                        : selectedFormat === 'pdf' ? 'text-[#bfff00]' : 'text-zinc-500'
+                    }`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-black text-[11px] text-white uppercase">
+                      <span className={`font-mono font-black text-[11px] uppercase ${
+                        isLight ? 'text-slate-900' : 'text-white'
+                      }`}>
                         Screenshot Replica PDF
                       </span>
-                      <span className="text-[8px] bg-sky-950 text-sky-400 border border-sky-850 font-bold font-mono px-1 rounded-xs uppercase">
+                      <span className="text-[8px] bg-sky-950 text-sky-450 border border-sky-850 font-bold font-mono px-1 rounded-xs uppercase">
                         .pdf
                       </span>
                     </div>
-                    <p className="text-zinc-500 text-[10px] leading-relaxed mt-1">
+                    <p className={`text-[10px] leading-relaxed mt-1 ${
+                      isLight ? 'text-slate-600' : 'text-zinc-500'
+                    }`}>
                       Visual catalog design. Virtual pages mapped with realistic message clouds, color tickers, and exact custom themes.
                     </p>
                   </div>
@@ -1128,27 +1167,41 @@ ${messageRowsHtml}
                   type="button"
                   onClick={() => setSelectedFormat('html')}
                   className={`w-full text-left p-3.5 transition-all duration-200 flex gap-3 cursor-pointer outline-hidden items-start border ${
-                    selectedFormat === 'html' 
-                      ? 'bg-neutral-900/80 border-[#bfff00]/50 shadow-md ring-1 ring-[#bfff00]/20' 
-                      : 'bg-neutral-950/40 border-neutral-850 hover:bg-[#121214] hover:border-neutral-700'
+                    isLight
+                      ? selectedFormat === 'html'
+                        ? 'bg-emerald-50 border-emerald-500 shadow-xs ring-1 ring-emerald-200'
+                        : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                      : selectedFormat === 'html' 
+                        ? 'bg-neutral-900/80 border-[#bfff00]/50 shadow-md ring-1 ring-[#bfff00]/20' 
+                        : 'bg-neutral-950/40 border-neutral-850 hover:bg-[#121214] hover:border-neutral-700'
                   }`}
                   id="select-format-html-card"
                 >
                   <div className={`w-8 h-8 rounded-sm flex items-center justify-center shrink-0 border ${
-                    selectedFormat === 'html' ? 'bg-[#bfff00]/15 border-[#bfff00]/25' : 'bg-neutral-900 border-neutral-800'
+                    isLight
+                      ? selectedFormat === 'html' ? 'bg-emerald-100 border-emerald-300' : 'bg-slate-100 border-slate-250'
+                      : selectedFormat === 'html' ? 'bg-[#bfff00]/15 border-[#bfff00]/25' : 'bg-neutral-900 border-neutral-800'
                   }`}>
-                    <Download className={`w-4 h-4 ${selectedFormat === 'html' ? 'text-[#bfff00]' : 'text-zinc-500'}`} />
+                    <Download className={`w-4 h-4 ${
+                      isLight
+                        ? selectedFormat === 'html' ? 'text-emerald-700' : 'text-slate-500'
+                        : selectedFormat === 'html' ? 'text-[#bfff00]' : 'text-zinc-500'
+                    }`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-black text-[11px] text-white uppercase">
+                      <span className={`font-mono font-black text-[11px] uppercase ${
+                        isLight ? 'text-slate-900' : 'text-white'
+                      }`}>
                         Interactive HTML Code
                       </span>
                       <span className="text-[8px] bg-emerald-950 text-emerald-400 border border-emerald-850 font-bold font-mono px-1 rounded-xs uppercase">
                         .html
                       </span>
                     </div>
-                    <p className="text-zinc-500 text-[10px] leading-relaxed mt-1">
+                    <p className={`text-[10px] leading-relaxed mt-1 ${
+                      isLight ? 'text-slate-600' : 'text-zinc-500'
+                    }`}>
                       Standalone simulated webapp. Offline metrics graphs, reactions search, and light/dark instant theme toggling.
                     </p>
                   </div>
@@ -1159,27 +1212,41 @@ ${messageRowsHtml}
                   type="button"
                   onClick={() => setSelectedFormat('txt')}
                   className={`w-full text-left p-3.5 transition-all duration-200 flex gap-3 cursor-pointer outline-hidden items-start border ${
-                    selectedFormat === 'txt' 
-                      ? 'bg-neutral-900/80 border-[#bfff00]/50 shadow-md ring-1 ring-[#bfff00]/20' 
-                      : 'bg-neutral-950/40 border-neutral-850 hover:bg-[#121214] hover:border-neutral-700'
+                    isLight
+                      ? selectedFormat === 'txt'
+                        ? 'bg-emerald-50 border-emerald-500 shadow-xs ring-1 ring-emerald-200'
+                        : 'bg-white border-slate-200 hover:bg-slate-50 hover:border-slate-300'
+                      : selectedFormat === 'txt' 
+                        ? 'bg-neutral-900/80 border-[#bfff00]/50 shadow-md ring-1 ring-[#bfff00]/20' 
+                        : 'bg-neutral-950/40 border-neutral-850 hover:bg-[#121214] hover:border-neutral-700'
                   }`}
                   id="select-format-txt-card"
                 >
                   <div className={`w-8 h-8 rounded-sm flex items-center justify-center shrink-0 border ${
-                    selectedFormat === 'txt' ? 'bg-[#bfff00]/15 border-[#bfff00]/25' : 'bg-neutral-900 border-neutral-800'
+                    isLight
+                      ? selectedFormat === 'txt' ? 'bg-emerald-100 border-emerald-300' : 'bg-slate-100 border-slate-250'
+                      : selectedFormat === 'txt' ? 'bg-[#bfff00]/15 border-[#bfff00]/25' : 'bg-neutral-900 border-neutral-800'
                   }`}>
-                    <FileText className={`w-4 h-4 ${selectedFormat === 'txt' ? 'text-[#bfff00]' : 'text-zinc-500'}`} />
+                    <FileText className={`w-4 h-4 ${
+                      isLight
+                        ? selectedFormat === 'txt' ? 'text-emerald-700' : 'text-slate-500'
+                        : selectedFormat === 'txt' ? 'text-[#bfff00]' : 'text-zinc-500'
+                    }`} />
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <span className="font-mono font-black text-[11px] text-white uppercase">
+                      <span className={`font-mono font-black text-[11px] uppercase ${
+                        isLight ? 'text-slate-900' : 'text-white'
+                      }`}>
                         Raw Plain Text Log
                       </span>
                       <span className="text-[8px] bg-yellow-950 text-yellow-400 border border-yellow-850 font-bold font-mono px-1 rounded-xs uppercase">
                         .txt
                       </span>
                     </div>
-                    <p className="text-zinc-500 text-[10px] leading-relaxed mt-1">
+                    <p className={`text-[10px] leading-relaxed mt-1 ${
+                      isLight ? 'text-slate-600' : 'text-zinc-500'
+                    }`}>
                       Plain txt transcription logs. Chronological records of chat timestamps & attachments – ideal for indexing or AI analysis.
                     </p>
                   </div>
@@ -1196,10 +1263,15 @@ ${messageRowsHtml}
                         type="button"
                         onClick={() => setPreviewTheme('ios-dark')}
                         className={`py-1.5 px-3 font-mono text-[9px] font-bold border cursor-pointer uppercase tracking-wider text-center transition-all ${
-                          previewTheme === 'ios-dark'
-                            ? 'bg-black text-white border-neutral-700'
-                            : 'bg-neutral-950 text-zinc-500 border-neutral-900 hover:text-white'
+                          isLight
+                            ? previewTheme === 'ios-dark'
+                              ? 'bg-slate-900 text-white border-slate-700 shadow-sm'
+                              : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+                            : previewTheme === 'ios-dark'
+                              ? 'bg-black text-white border-neutral-700'
+                              : 'bg-neutral-950 text-zinc-500 border-neutral-900 hover:text-white'
                         }`}
+                        id="pdf-theme-preset-dark"
                       >
                         <span className="inline-flex items-center gap-1">
                           <Moon className="w-3 h-3 text-sky-450" /> DARK STYLE
@@ -1209,10 +1281,15 @@ ${messageRowsHtml}
                         type="button"
                         onClick={() => setPreviewTheme('ios-light')}
                         className={`py-1.5 px-3 font-mono text-[9px] font-bold border cursor-pointer uppercase tracking-wider text-center transition-all ${
-                          previewTheme === 'ios-light'
-                            ? 'bg-neutral-100 text-black border-neutral-300'
-                            : 'bg-neutral-950 text-zinc-500 border-neutral-900 hover:text-white'
+                          isLight
+                            ? previewTheme === 'ios-light'
+                              ? 'bg-slate-900 text-white border-slate-700 shadow-sm'
+                              : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50 hover:text-slate-900'
+                            : previewTheme === 'ios-light'
+                              ? 'bg-neutral-100 text-black border-neutral-300'
+                              : 'bg-neutral-950 text-zinc-500 border-neutral-900 hover:text-white'
                         }`}
+                        id="pdf-theme-preset-light"
                       >
                         <span className="inline-flex items-center gap-1">
                           <Sun className="w-3 h-3 text-amber-500" /> LIGHT STYLE
@@ -1228,11 +1305,11 @@ ${messageRowsHtml}
               <div className="p-5 border-t border-neutral-900 bg-neutral-950/70 space-y-3 shrink-0">
                 <div className="flex justify-between text-[10px] font-mono text-zinc-400 uppercase">
                   <span>TOTAL MESSAGES:</span>
-                  <span className="text-white font-bold">{messages.length.toLocaleString()}</span>
+                  <span className={isLight ? "text-slate-900 font-bold" : "text-white font-bold"}>{messages.length.toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between text-[10px] font-mono text-zinc-400 uppercase">
                   <span>EST. TOTAL SIZE:</span>
-                  <span className="text-white font-bold">~{getFileSize(chatTitle)}</span>
+                  <span className={isLight ? "text-slate-900 font-bold" : "text-white font-bold"}>~{getFileSize(chatTitle)}</span>
                 </div>
 
                 <button

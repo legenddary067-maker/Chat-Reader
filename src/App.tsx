@@ -40,11 +40,36 @@ import {
   CheckCircle,
   HelpCircle,
   TrendingUp,
-  MessageSquare
+  MessageSquare,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 
 export default function App() {
+  // Theme state
+  const [theme, setTheme] = useState<'dark' | 'light'>(() => {
+    return (localStorage.getItem('chatreader-theme') as 'dark' | 'light') || 'dark';
+  });
+
+  useEffect(() => {
+    localStorage.setItem('chatreader-theme', theme);
+    const rootEl = document.getElementById('chatreader-root');
+    if (rootEl) {
+      if (theme === 'light') {
+        rootEl.classList.add('light-mode');
+        rootEl.classList.remove('dark-mode');
+        document.documentElement.classList.add('light-mode');
+        document.documentElement.classList.remove('dark-mode');
+      } else {
+        rootEl.classList.add('dark-mode');
+        rootEl.classList.remove('light-mode');
+        document.documentElement.classList.add('dark-mode');
+        document.documentElement.classList.remove('light-mode');
+      }
+    }
+  }, [theme]);
+
   // Handbook and Diagnostic states
   const [showAbout, setShowAbout] = useState(false);
 
@@ -321,17 +346,39 @@ export default function App() {
         <div className="absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-[#bfff00] via-amber-400 to-purple-600" />
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <span className="flex items-center justify-center w-10 h-10 bg-[#bfff00] text-black rounded-none shadow-lg -skew-x-6 select-none leading-none btn-glowing-effect" id="logo-badge">
-              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5.5 h-5.5 transform skew-x-6 text-black">
+            <span className="flex items-center justify-center w-10 h-10 bg-[#bfff00] text-black rounded-lg shadow-lg select-none leading-none btn-glowing-effect" id="logo-badge">
+              <svg viewBox="0 0 24 24" fill="currentColor" className="w-5.5 h-5.5 text-black">
                 <path d="M19 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H8v-2h8v2zm0-4H8V8h8v2z" />
               </svg>
             </span>
             <div>
-              <h1 className="text-lg font-black italic text-white tracking-widest uppercase flex items-center gap-2 font-display">
-                CHATREADER <span className="text-[9px] font-mono text-black font-black bg-[#bfff00] px-2 py-0.5 rounded-none tracking-widest leading-none not-italic">PRO S2.4</span>
+              <h1 className="text-lg font-black text-white tracking-widest uppercase flex items-center gap-2 font-display">
+                CHATREADER <span className="text-[9px] font-mono text-black font-black bg-[#bfff00] px-2 py-0.5 rounded-md tracking-widest leading-none">PRO S2.4</span>
               </h1>
               <p className="text-[9px] text-neutral-500 font-mono uppercase tracking-widest font-bold">SECURE CONVERSATION LOG ANALYSIS & INSIGHTS</p>
             </div>
+          </div>
+
+          {/* Theme Toggler Button */}
+          <div className="flex items-center gap-3">
+            <button
+              onClick={() => setTheme(prev => prev === 'dark' ? 'light' : 'dark')}
+              className="p-2 sm:px-3 sm:py-1.5 bg-neutral-950 hover:bg-neutral-900 border border-neutral-850 hover:border-[#bfff00] text-[#bfff00] transition-all cursor-pointer rounded-none flex items-center gap-2 font-mono text-[10px] uppercase font-bold tracking-wider select-none"
+              id="theme-toggler"
+              title="Toggle theme (High-Contrast Light / Dark Mode)"
+            >
+              {theme === 'dark' ? (
+                <>
+                  <Sun className="w-4.5 h-4.5 text-amber-400 shrink-0" />
+                  <span className="hidden sm:inline">Light Mode</span>
+                </>
+              ) : (
+                <>
+                  <Moon className="w-4.5 h-4.5 text-indigo-400 shrink-0" />
+                  <span className="hidden sm:inline">Dark Mode</span>
+                </>
+              )}
+            </button>
           </div>
         </div>
       </header>
@@ -388,6 +435,7 @@ export default function App() {
             >
               {/* Glowy Waves Hero Sandbox Integration with Reactive Waves */}
               <GlowyWavesHero
+                theme={theme}
                 onLaunchClick={() => {
                   const fileInputEl = document.getElementById("file-input-trigger");
                   if (fileInputEl) {
@@ -592,7 +640,11 @@ export default function App() {
                   <div className="flex flex-col sm:flex-row gap-2 w-full md:w-auto shrink-0">
                     <button
                       onClick={() => setShowAbout(true)}
-                      className="px-5 py-3 border border-neutral-800 hover:border-[#bfff00]/65 bg-black text-neutral-300 hover:text-white font-mono font-extrabold text-[11px] uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 active:scale-95 group/btn"
+                      className={`px-5 py-3 border font-mono font-extrabold text-[11px] uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 active:scale-95 group/btn ${
+                        theme === 'light'
+                          ? "bg-black text-white border-slate-400"
+                          : "bg-black text-neutral-300 hover:text-white border-neutral-800 hover:border-[#bfff00]/65"
+                      }`}
                       id="intro-btn-guide"
                     >
                       <BookOpen className="w-4 h-4 text-[#bfff00] group-hover/btn:scale-110 transition-transform" />
@@ -600,7 +652,11 @@ export default function App() {
                     </button>
                     <button
                       onClick={handleForceReload}
-                      className="px-5 py-3 border border-neutral-800 hover:border-rose-850/70 hover:bg-rose-950/15 text-neutral-400 hover:text-rose-400 font-mono font-extrabold text-[11px] uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 active:scale-95 group/btn-reload"
+                      className={`px-5 py-3 border font-mono font-extrabold text-[11px] uppercase tracking-wider flex items-center justify-center gap-2.5 cursor-pointer transition-all duration-300 active:scale-95 group/btn-reload ${
+                        theme === 'light'
+                          ? "border-slate-300 text-slate-200 bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-300"
+                          : "border-neutral-800 hover:border-rose-850/70 hover:bg-rose-950/15 text-neutral-400 hover:text-rose-400 bg-transparent"
+                      }`}
                       id="intro-btn-force-reload"
                       title="Forcibly wipes state cache and reboots browser context"
                     >
@@ -640,7 +696,11 @@ export default function App() {
                 <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2 w-full lg:w-auto shrink-0 justify-end" id="session-action-deck">
                   <button
                     onClick={() => setShowAbout(true)}
-                    className="flex-1 sm:flex-initial px-4 py-2 border border-neutral-800 hover:border-[#bfff00]/50 bg-black text-[#bfff00] hover:text-white transition-all duration-300 text-[11px] flex items-center justify-center gap-2 cursor-pointer font-bold font-mono uppercase tracking-wider shadow-sm hover:shadow-[0_0_12px_rgba(191,255,0,0.1)]"
+                    className={`flex-1 sm:flex-initial px-4 py-2 border transition-all duration-300 text-[11px] flex items-center justify-center gap-2 cursor-pointer font-bold font-mono uppercase tracking-wider shadow-sm hover:shadow-[0_0_12px_rgba(191,255,0,0.1)] ${
+                      theme === 'light'
+                        ? "bg-black text-[#bfff00] border-slate-400"
+                        : "bg-black text-[#bfff00] hover:text-white border-neutral-800 hover:border-[#bfff00]/50"
+                    }`}
                     id="workspace-about-btn"
                     title="Open diagnostic rules and specifications"
                   >
@@ -650,7 +710,11 @@ export default function App() {
 
                   <button
                     onClick={handleForceReload}
-                    className="flex-1 sm:flex-initial px-4 py-2 border border-neutral-800 hover:border-rose-950 hover:bg-rose-950/10 text-neutral-400 hover:text-rose-400 transition-all duration-300 text-[11px] flex items-center justify-center gap-2 cursor-pointer font-bold font-mono uppercase tracking-wider shadow-sm hover:shadow-[0_0_12px_rgba(239,68,68,0.1)]"
+                    className={`flex-1 sm:flex-initial px-4 py-2 border transition-all duration-300 text-[11px] flex items-center justify-center gap-2 cursor-pointer font-bold font-mono uppercase tracking-wider shadow-sm hover:shadow-[0_0_12px_rgba(239,68,68,0.1)] ${
+                      theme === 'light'
+                        ? "border-slate-300 text-slate-200 bg-white hover:bg-rose-50 hover:text-rose-600 hover:border-rose-300"
+                        : "border-neutral-800 hover:border-rose-950 hover:bg-rose-950/10 text-neutral-400 hover:text-rose-400"
+                    }`}
                     id="workspace-reload-btn"
                     title="Triggers hard recovery wipe"
                   >
@@ -674,66 +738,77 @@ export default function App() {
               <div className="border-b border-neutral-900 pb-2 flex gap-2 flex-wrap items-center animate-fade-in" id="workspace-tabs-bar">
                 <button
                   onClick={() => setActiveTab('stats')}
-                  className={`px-5 py-2.5 border text-xs font-black font-mono uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer -skew-x-6 ${
+                  className={`px-4 py-2 text-xs font-bold font-mono uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer rounded-lg border ${
                     activeTab === 'stats'
-                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-lg font-black'
+                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-md'
                       : 'bg-neutral-950 border-neutral-850 text-neutral-400 hover:border-neutral-700 hover:text-white hover:bg-neutral-900'
                   }`}
                   id="tab-trigger-stats"
                 >
                   <TrendingUp className="w-4 h-4" />
-                  <span>GRID ANALYTICS ///</span>
+                  <span>Grid Analytics</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('chat')}
-                  className={`px-5 py-2.5 border text-xs font-black font-mono uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer -skew-x-6 ${
+                  className={`px-4 py-2 text-xs font-bold font-mono uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer rounded-lg border ${
                     activeTab === 'chat'
-                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-lg font-black'
+                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-md'
                       : 'bg-neutral-950 border-neutral-850 text-neutral-400 hover:border-neutral-700 hover:text-white hover:bg-neutral-900'
                   }`}
                   id="tab-trigger-chat"
                 >
                   <MessageSquare className="w-4 h-4" />
-                  <span>CHAT TRANSCRIPTION ///</span>
+                  <span>Chat Transcription</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('chatbook')}
-                  className={`px-5 py-2.5 border text-xs font-black font-mono uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer -skew-x-6 ${
+                  className={`px-4 py-2 text-xs font-bold font-mono uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer rounded-lg border ${
                     activeTab === 'chatbook'
-                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-lg font-black'
+                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-md'
                       : 'bg-neutral-950 border-neutral-850 text-neutral-400 hover:border-neutral-700 hover:text-white hover:bg-neutral-900'
                   }`}
                   id="tab-trigger-chatbook"
                 >
                   <BookOpen className="w-4 h-4" />
-                  <span>CREATIVE CHATBOOK ///</span>
+                  <span>Creative Chatbook</span>
                 </button>
                 <button
                   onClick={() => setActiveTab('ai-summary')}
-                  className={`px-5 py-2.5 border text-xs font-black font-mono uppercase tracking-widest transition-all flex items-center gap-2 cursor-pointer -skew-x-6 ${
+                  className={`px-4 py-2 text-xs font-bold font-mono uppercase tracking-wider transition-all flex items-center gap-2 cursor-pointer rounded-lg border ${
                     activeTab === 'ai-summary'
-                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-lg font-black'
+                      ? 'bg-[#bfff00] border-[#bfff00] text-black shadow-md'
                       : 'bg-neutral-950 border-neutral-850 text-neutral-400 hover:border-neutral-700 hover:text-white hover:bg-neutral-900'
                   }`}
                   id="tab-trigger-ai-summary"
                 >
                   <Sparkles className="w-4 h-4" />
-                  <span>AI SUMMARIES & INSIGHTS ///</span>
+                  <span>AI Summaries & Insights</span>
                 </button>
               </div>
 
               {/* Dynamic loaded view matching active tab */}
               {chatStats && (
-                <div id="active-tab-panel">
-                  {activeTab === 'stats' ? (
-                    <Dashboard stats={chatStats} messages={messages} />
-                  ) : activeTab === 'chat' ? (
-                    <ChatViewer messages={messages} participants={participantsList} stats={chatStats} fileName={fileName} />
-                  ) : activeTab === 'chatbook' ? (
-                    <ChatbookCreator messages={messages} stats={chatStats} fileName={fileName} />
-                  ) : (
-                    <AiSummarizer messages={messages} stats={chatStats} fileName={fileName} />
-                  )}
+                <div id="active-tab-panel" className="overflow-hidden">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={activeTab}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.15, ease: "easeInOut" }}
+                      className="w-full"
+                    >
+                      {activeTab === 'stats' ? (
+                        <Dashboard stats={chatStats} messages={messages} />
+                      ) : activeTab === 'chat' ? (
+                        <ChatViewer messages={messages} participants={participantsList} stats={chatStats} fileName={fileName} />
+                      ) : activeTab === 'chatbook' ? (
+                        <ChatbookCreator messages={messages} stats={chatStats} fileName={fileName} />
+                      ) : (
+                        <AiSummarizer messages={messages} stats={chatStats} fileName={fileName} />
+                      )}
+                    </motion.div>
+                  </AnimatePresence>
                 </div>
               )}
 

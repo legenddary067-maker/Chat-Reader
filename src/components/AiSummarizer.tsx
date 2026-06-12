@@ -777,11 +777,11 @@ export default function AiSummarizer({ messages, stats, fileName }: AiSummarizer
             <button
               type="submit"
               disabled={isAsking || !question.trim() || messages.length === 0}
-              className="px-4 bg-[#bfff00] text-black font-black font-mono text-xs uppercase tracking-widest hover:bg-white disabled:opacity-50 disabled:hover:bg-[#bfff00] transition-colors flex items-center gap-1.5 cursor-pointer -skew-x-6 shrink-0"
+              className="px-4 bg-[#bfff00] text-black font-black font-mono text-xs uppercase tracking-wider hover:bg-white disabled:opacity-50 disabled:hover:bg-[#bfff00] transition-colors flex items-center gap-1.5 cursor-pointer rounded-lg shrink-0"
               id="qa-chat-submit-btn"
             >
               <span>SEND</span>
-              <Send className="w-3 h-3 origin-center transform skew-x-6 shrink-0" />
+              <Send className="w-3 h-3 shrink-0" />
             </button>
           </form>
 

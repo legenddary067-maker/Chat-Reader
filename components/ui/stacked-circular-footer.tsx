@@ -25,6 +25,7 @@ function StackedCircularFooter({
             onClick={scrollToTop}
             className="mb-6 flex items-center justify-center w-12 h-12 bg-[#bfff00] text-black rounded-none shadow-lg -skew-x-6 hover:scale-105 active:scale-95 transition-transform cursor-pointer group"
             title="Back to Top"
+            id="footer-scroll-top-btn"
           >
             <svg viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6 transform skew-x-6 text-black">
               <path d="M19 2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h4l3 3 3-3h4c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 12H8v-2h8v2zm0-4H8V8h8v2z" />
@@ -38,6 +39,7 @@ function StackedCircularFooter({
                 onClick={onForceReload} 
                 className="hover:text-rose-400 text-neutral-200 hover:underline transition-colors cursor-pointer flex items-center gap-1.5 bg-neutral-900 border border-neutral-800 px-3 py-1.5 uppercase tracking-widest text-[10px]"
                 title="Wipe state & reboot context"
+                id="footer-purge-cache-btn"
               >
                 <RefreshCw className="w-3.5 h-3.5 text-rose-500" /> Purge Cache
               </button>

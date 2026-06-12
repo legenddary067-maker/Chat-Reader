@@ -59,12 +59,14 @@ const statsVariants: Variants = {
 interface GlowyWavesHeroProps {
   onLaunchClick?: () => void;
   onExploreClick?: () => void;
+  theme?: 'light' | 'dark';
 }
 
-export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHeroProps) {
+export function GlowyWavesHero({ onLaunchClick, onExploreClick, theme = 'dark' }: GlowyWavesHeroProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const mouseRef = useRef<Point>({ x: 0, y: 0 });
   const targetMouseRef = useRef<Point>({ x: 0, y: 0 });
+  const isLight = theme === "light";
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -77,45 +79,45 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
     let time = 0;
 
     const computeThemeColors = () => {
-      // Custom palette to align nicely with the glowing green/amber dark theme
+      // Toggle top/bottom and wave palettes based on the selected theme (light vs dark)
       return {
-        backgroundTop: "rgba(8, 8, 8, 1)",
-        backgroundBottom: "rgba(12, 12, 14, 0.95)",
+        backgroundTop: isLight ? "rgba(255, 255, 255, 1)" : "rgba(8, 8, 8, 1)",
+        backgroundBottom: isLight ? "rgba(241, 245, 249, 1)" : "rgba(12, 12, 14, 0.95)",
         wavePalette: [
           {
             offset: 0,
             amplitude: 45,
             frequency: 0.003,
-            color: "rgba(191, 255, 0, 0.8)", // neon yellow
-            opacity: 0.3,
+            color: isLight ? "rgba(22, 163, 74, 0.75)" : "rgba(191, 255, 0, 0.8)", // rich emerald or neon lime
+            opacity: isLight ? 0.7 : 0.3,
           },
           {
             offset: Math.PI / 2,
             amplitude: 55,
             frequency: 0.0026,
-            color: "rgba(251, 191, 36, 0.7)", // amber
-            opacity: 0.25,
+            color: isLight ? "rgba(217, 119, 6, 0.7)" : "rgba(251, 191, 36, 0.7)", // soft amber or glowing gold
+            opacity: isLight ? 0.65 : 0.25,
           },
           {
             offset: Math.PI,
             amplitude: 40,
             frequency: 0.0034,
-            color: "rgba(147, 51, 234, 0.65)", // purple
-            opacity: 0.2,
+            color: isLight ? "rgba(124, 58, 237, 0.6)" : "rgba(147, 51, 234, 0.65)", // soft violet or neon purple
+            opacity: isLight ? 0.6 : 0.2,
           },
           {
             offset: Math.PI * 1.5,
             amplitude: 50,
             frequency: 0.0022,
-            color: "rgba(163, 230, 53, 0.25)",
-            opacity: 0.15,
+            color: isLight ? "rgba(34, 197, 94, 0.5)" : "rgba(163, 230, 53, 0.25)",
+            opacity: isLight ? 0.5 : 0.15,
           },
           {
             offset: Math.PI * 2,
             amplitude: 35,
             frequency: 0.004,
-            color: "rgba(255, 255, 255, 0.2)",
-            opacity: 0.1,
+            color: isLight ? "rgba(148, 163, 184, 0.4)" : "rgba(255, 255, 255, 0.2)",
+            opacity: isLight ? 0.4 : 0.1,
           },
         ] satisfies WaveConfig[],
       };
@@ -200,8 +202,12 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
       ctx.lineWidth = 2.5;
       ctx.strokeStyle = wave.color;
       ctx.globalAlpha = wave.opacity;
-      ctx.shadowBlur = 35;
-      ctx.shadowColor = wave.color;
+      if (!isLight) {
+        ctx.shadowBlur = 35;
+        ctx.shadowColor = wave.color;
+      } else {
+        ctx.shadowBlur = 0;
+      }
       ctx.stroke();
 
       ctx.restore();
@@ -240,23 +246,34 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
       }
       cancelAnimationFrame(animationId);
     };
-  }, []);
+  }, [theme, isLight]);
 
   return (
     <section
-      className="relative isolate flex min-h-[70vh] w-full items-center justify-center overflow-hidden bg-black/80 border border-neutral-900 rounded-none mb-4"
+      id="hero-canvas-section"
+      className={`relative isolate flex min-h-[70vh] w-full items-center justify-center overflow-hidden border mb-4 rounded-none transition-colors duration-300 ${
+        isLight
+          ? "bg-white border-slate-200 shadow-xl"
+          : "bg-black/80 border-neutral-900 shadow-2xl"
+      }`}
       role="region"
       aria-label="Glowing waves hero section"
     >
       <canvas
         ref={canvasRef}
-        className="absolute inset-0 h-full w-full opacity-60 pointer-events-auto"
+        className={`absolute inset-0 h-full w-full pointer-events-auto transition-opacity duration-300 ${
+          isLight ? "opacity-85" : "opacity-60"
+        }`}
         aria-hidden="true"
       />
 
       <div className="absolute inset-0 -z-10 pointer-events-none">
-        <div className="absolute left-1/2 top-0 h-[320px] w-[320px] -translate-x-1/2 rounded-full bg-[#bfff00]/[0.025] blur-[100px]" />
-        <div className="absolute bottom-0 right-0 h-[240px] w-[240px] rounded-full bg-amber-400/[0.015] blur-[80px]" />
+        <div className={`absolute left-1/2 top-0 h-[320px] w-[320px] -translate-x-1/2 rounded-full blur-[100px] transition-colors duration-300 ${
+          isLight ? "bg-emerald-500/[0.04]" : "bg-[#bfff00]/[0.025]"
+        }`} />
+        <div className={`absolute bottom-0 right-0 h-[240px] w-[240px] rounded-full blur-[80px] transition-colors duration-300 ${
+          isLight ? "bg-amber-400/[0.03]" : "bg-amber-400/[0.015]"
+        }`} />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-4xl flex-col items-center px-4 py-12 text-center md:px-6">
@@ -268,17 +285,32 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
         >
           <motion.h1
             variants={itemVariants}
-            className="mb-4 text-3xl font-black tracking-tight text-white md:text-5xl uppercase font-display italic leading-none"
+            style={{ 
+              textShadow: isLight ? "none" : "0 2px 12px rgba(0,0,0,0.95)" 
+            }}
+            className={`mb-4 text-[1.65rem] sm:text-3xl md:text-5xl font-black tracking-tight uppercase font-display leading-normal md:leading-normal transition-colors duration-305 ${
+              isLight ? "text-slate-900 font-black" : "text-white"
+            }`}
           >
             Explore Conversation{" "}
-            <span className="bg-gradient-to-r from-[#bfff00] via-[#dffd40] to-yellow-500 bg-clip-text text-transparent">
+            <span 
+              className={`inline-block py-1 px-1 bg-gradient-to-r bg-clip-text text-transparent transition-all duration-300 ${
+                isLight
+                  ? "from-emerald-700 via-green-600 to-amber-700"
+                  : "from-[#bfff00] via-[#dffd40] to-yellow-500"
+              }`}
+            >
               Archives Instantly
             </span>
           </motion.h1>
 
           <motion.p
             variants={itemVariants}
-            className="mx-auto mb-8 max-w-2xl text-xs sm:text-sm text-neutral-400 leading-relaxed font-sans"
+            style={{ 
+              color: isLight ? "#2d3748" : "#f1f5f9",
+              textShadow: isLight ? "none" : "0 2px 8px rgba(0,0,0,0.9)"
+            }}
+            className="mx-auto mb-8 max-w-2xl text-xs sm:text-sm leading-relaxed font-sans transition-colors duration-300 font-semibold"
           >
             Secure diagnostic parser translates raw WhatsApp logs, iOS chats, or Instagram JSON exports locally.
             No data ever leaves your browser window. Zero storage latency, maximum client-side isolated speed.
@@ -291,7 +323,11 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
             <Button
               size="sm"
               onClick={onLaunchClick}
-              className="group gap-2 rounded-none px-6 py-5 bg-[#bfff00] hover:bg-white text-black font-black font-mono uppercase tracking-widest text-[10px] w-full sm:w-auto cursor-pointer duration-200"
+              className={`group gap-2 rounded-none px-6 py-5 font-black font-mono uppercase tracking-widest text-[10px] w-full sm:w-auto cursor-pointer duration-300 ${
+                isLight
+                  ? "bg-emerald-700 hover:bg-slate-900 text-white"
+                  : "bg-[#bfff00] hover:bg-white text-black"
+              }`}
             >
               Upload Chat Archive
               <ArrowRight
@@ -303,7 +339,17 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
               size="sm"
               variant="outline"
               onClick={onExploreClick}
-              className="rounded-none border-neutral-800 bg-neutral-950/80 px-6 py-5 text-neutral-300 hover:text-white hover:border-[#bfff00] text-[10px] font-mono uppercase tracking-widest backdrop-blur transition-all duration-200 w-full sm:w-auto cursor-pointer"
+              className={`rounded-none px-6 py-5 text-[10px] font-mono uppercase tracking-widest backdrop-blur transition-all duration-305 w-full sm:w-auto cursor-pointer ${
+                isLight
+                  ? "hover:bg-emerald-100"
+                  : "border-neutral-500 bg-neutral-950 text-white hover:text-[#bfff00] hover:border-[#bfff00] hover:bg-neutral-900"
+              }`}
+              style={{
+                color: isLight ? "#115e59" : undefined,
+                borderColor: isLight ? "#0f766e" : undefined,
+                backgroundColor: isLight ? "#f0fdf4" : undefined,
+                borderWidth: isLight ? "1px" : undefined
+              }}
             >
               Try Simulation Data
             </Button>
@@ -311,12 +357,20 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
 
           <motion.ul
             variants={itemVariants}
-            className="mb-8 flex flex-wrap items-center justify-center gap-3.5 text-[9px] uppercase tracking-[0.2em] font-mono text-neutral-400"
+            style={{ color: isLight ? "#166534" : "#ffffff" }}
+            className="mb-8 flex flex-wrap items-center justify-center gap-3.5 text-[9px] uppercase tracking-[0.2em] font-mono transition-colors duration-300"
           >
             {highlightPills.map((pill) => (
               <li
                 key={pill}
-                className="rounded-none border border-neutral-900 bg-neutral-950/50 px-3 py-1.5 backdrop-blur-sm"
+                style={{
+                  backgroundColor: isLight ? "#f0fdf4" : "rgba(10, 10, 10, 0.95)",
+                  borderColor: isLight ? "#86efac" : "#525252",
+                  color: isLight ? "#14532d" : "#ffffff",
+                  textShadow: isLight ? "none" : "0 1px 2px rgba(0,0,0,0.8)",
+                  boxShadow: isLight ? "none" : "0 4px 12px rgba(0,0,0,0.6)"
+                }}
+                className="rounded-none border px-3 py-1.5 backdrop-blur-md transition-all duration-300 font-extrabold shadow-sm"
               >
                 {pill}
               </li>
@@ -325,7 +379,12 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
 
           <motion.div
             variants={statsVariants}
-            className="grid gap-4 rounded-none border border-neutral-900 bg-neutral-950/40 p-5 backdrop-blur-sm sm:grid-cols-3"
+            style={{
+              backgroundColor: isLight ? "#f0fdf4" : "rgba(8, 8, 8, 0.95)",
+              borderColor: isLight ? "#86efac" : "#404040",
+              boxShadow: isLight ? "none" : "0 4px 20px rgba(0,0,0,0.7)"
+            }}
+            className="grid gap-4 rounded-none border p-5 backdrop-blur-md sm:grid-cols-3 transition-colors duration-300 shadow-sm"
           >
             {heroStats.map((stat) => (
               <motion.div
@@ -333,10 +392,19 @@ export function GlowyWavesHero({ onLaunchClick, onExploreClick }: GlowyWavesHero
                 variants={itemVariants}
                 className="space-y-1 text-center sm:text-left"
               >
-                <div className="text-[8px] uppercase tracking-[0.25em] text-neutral-500 font-mono">
+                <div 
+                  style={{ color: isLight ? "#166534" : "#cbd5e1" }}
+                  className="text-[8px] uppercase tracking-[0.25em] font-mono transition-colors duration-300 font-bold"
+                >
                   {stat.label}
                 </div>
-                <div className="text-sm font-extrabold text-[#bfff00] font-mono">
+                <div 
+                  style={{ 
+                    color: isLight ? "#15803d" : "#bfff00",
+                    textShadow: isLight ? "none" : "0 1px 3px rgba(0,0,0,0.8)"
+                  }}
+                  className="text-sm font-extrabold font-mono transition-colors duration-300"
+                >
                   {stat.value}
                 </div>
               </motion.div>

@@ -21,7 +21,10 @@ import {
   Sparkles, 
   Activity, 
   AlertCircle,
-  CalendarDays
+  CalendarDays,
+  Download,
+  Loader2,
+  CheckCircle2
 } from 'lucide-react';
 import { motion } from 'motion/react';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
@@ -35,6 +38,24 @@ interface DashboardProps {
 
 export default function Dashboard({ stats, messages = [] }: DashboardProps) {
   const [selectedParticipant, setSelectedParticipant] = useState<string | null>(null);
+  const [isLightMode, setIsLightMode] = useState(false);
+
+  useEffect(() => {
+    const checkTheme = () => {
+      const isLight = document.getElementById('chatreader-root')?.classList.contains('light-mode') || document.documentElement.classList.contains('light-mode');
+      setIsLightMode(!!isLight);
+    };
+    checkTheme();
+    const observer = new MutationObserver(checkTheme);
+    const rootEl = document.getElementById('chatreader-root');
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] });
+    if (rootEl) {
+      observer.observe(rootEl, { attributes: true, attributeFilter: ['class'] });
+    }
+    return () => observer.disconnect();
+  }, []);
+
+  const [downloadStatus, setDownloadStatus] = useState<'idle' | 'preparing' | 'downloading' | 'completed'>('idle');
   const [slideStart, setSlideStart] = useState(0);
   const [slideEnd, setSlideEnd] = useState(() => stats.timeline.length > 0 ? stats.timeline.length - 1 : 0);
 
@@ -106,6 +127,130 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
   const participantArray = (Object.values(participants) as ParticipantStats[]).sort(
     (a, b) => b.messageCount - a.messageCount
   );
+
+  const handleDownloadStats = () => {
+    setDownloadStatus('preparing');
+
+    setTimeout(() => {
+      setDownloadStatus('downloading');
+
+      try {
+        const csvRows: string[][] = [];
+
+        // Add Excel column delimiter directive so Excel instantly displays it in custom columns
+        csvRows.push(["sep=,"]);
+
+        // Helper to safely write row elements padded to exactly 9 columns
+        const addRowPadded = (section: string, metric: string, ...values: (string | number)[]) => {
+          const totalColumns = 9;
+          const csvRow = new Array(totalColumns).fill("");
+          
+          const escapeCSV = (val: string | number) => {
+            const str = String(val);
+            if (str.includes(',') || str.includes('"') || str.includes('\n')) {
+              return `"${str.replace(/"/g, '""')}"`;
+            }
+            return str;
+          };
+
+          csvRow[0] = escapeCSV(section);
+          csvRow[1] = escapeCSV(metric);
+          for (let i = 0; i < values.length && (i + 2) < totalColumns; i++) {
+            csvRow[i + 2] = escapeCSV(values[i]);
+          }
+          csvRows.push(csvRow);
+        };
+
+        // Header Row
+        addRowPadded("CATEGORY", "PARAMETER / METRIC", "VALUE 1", "VALUE 2", "VALUE 3", "VALUE 4", "VALUE 5", "VALUE 6", "VALUE 7");
+        addRowPadded("", "", "", "", "", "", "", "", ""); // Spacer
+
+        // 1. Overview data
+        addRowPadded("OVERVIEW", "Total Messages", totalMessages, "", "", "", "", "", "");
+        addRowPadded("OVERVIEW", "Total Words", totalWords, "", "", "", "", "", "");
+        addRowPadded("OVERVIEW", "Total Characters", totalCharacters, "", "", "", "", "", "");
+        addRowPadded("OVERVIEW", "Total Emojis", totalEmojis, "", "", "", "", "", "");
+        addRowPadded("OVERVIEW", "Active Date Range", `${formatDate(dateRange.start)} - ${formatDate(dateRange.end)}`, "", "", "", "", "", "");
+        addRowPadded("OVERVIEW", "Peak Hour of Activity", formatHour(peakHour), "", "", "", "", "", "");
+        addRowPadded("OVERVIEW", "Peak Day of Activity", peakDay ? `${peakDay.date} (${peakDay.count} messages)` : 'N/A', "", "", "", "", "", "");
+        addRowPadded("", "", "", "", "", "", "", "", ""); // Spacer
+
+        // 2. Participant stats
+        addRowPadded(
+          "PARTICIPANT BREAKDOWN", 
+          "Participant Name", 
+          "Message Count", 
+          "Percentage (%)", 
+          "Word Count", 
+          "Character Count", 
+          "Emoji Count", 
+          "Avg Words/Msg", 
+          "Avg Chars/Msg"
+        );
+        
+        participantArray.forEach((p) => {
+          const percentage = ((p.messageCount / (totalMessages || 1)) * 100).toFixed(1);
+          const avgWords = p.messageCount > 0 ? (p.wordCount / p.messageCount).toFixed(1) : "0";
+          const avgChars = p.messageCount > 0 ? (p.characterCount / p.messageCount).toFixed(1) : "0";
+          addRowPadded(
+            "PARTICIPANT BREAKDOWN",
+            p.name,
+            p.messageCount,
+            `${percentage}%`,
+            p.wordCount,
+            p.characterCount,
+            p.emojiCount,
+            avgWords,
+            avgChars
+          );
+        });
+        addRowPadded("", "", "", "", "", "", "", "", ""); // Spacer
+
+        // 3. Weekday distribution stats
+        const weekdayNames = ['SUNDAY', 'MONDAY', 'TUESDAY', 'WEDNESDAY', 'THURSDAY', 'FRIDAY', 'SATURDAY'];
+        addRowPadded("WEEKDAY ACTIVITY", "Weekday", "Message Count", "Percentage (%)", "", "", "", "", "");
+        dayOfWeekDistribution.forEach((val, idx) => {
+          const pct = totalMessages > 0 ? ((val / totalMessages) * 100).toFixed(1) : "0";
+          addRowPadded("WEEKDAY ACTIVITY", weekdayNames[idx], val, `${pct}%`, "", "", "", "", "");
+        });
+        addRowPadded("", "", "", "", "", "", "", "", ""); // Spacer
+
+        // 4. Hourly distribution stats
+        addRowPadded("HOURLY ACTIVITY", "Hour Slot", "Message Count", "Percentage (%)", "", "", "", "", "");
+        hourlyDistribution.forEach((val, hr) => {
+          const pct = totalMessages > 0 ? ((val / totalMessages) * 100).toFixed(1) : "0";
+          addRowPadded("HOURLY ACTIVITY", formatHour(hr), val, `${pct}%`, "", "", "", "", "");
+        });
+
+        const csvContent = csvRows.map(row => row.join(',')).join('\n');
+        const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        
+        // Naming the stats export based on dates
+        const startStr = dateRange.start ? (dateRange.start instanceof Date ? dateRange.start.toISOString().split('T')[0] : new Date(dateRange.start).toISOString().split('T')[0]) : 'start';
+        const endStr = dateRange.end ? (dateRange.end instanceof Date ? dateRange.end.toISOString().split('T')[0] : new Date(dateRange.end).toISOString().split('T')[0]) : 'end';
+        
+        link.setAttribute('href', url);
+        link.setAttribute('download', `chatreader_analytics_${startStr}_to_${endStr}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+        setDownloadStatus('completed');
+
+        // Turn off indicator after display
+        setTimeout(() => {
+          setDownloadStatus('idle');
+        }, 3000);
+
+      } catch (err) {
+        console.error("CSV compilation failed", err);
+        setDownloadStatus('idle');
+      }
+    }, 600);
+  };
 
   const [hoveredNode, setHoveredNode] = useState<string | null>(null);
 
@@ -194,6 +339,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
         name: "Classic Essayist", 
         color: "border-white text-white", 
         bg: "bg-white text-black", 
+        bgLight: "bg-blue-100 text-blue-900 border-blue-400 font-bold",
         icon: "E",
         desc: "Profile: Long, deep, reflective essays" 
       };
@@ -202,6 +348,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
         name: "Consistent Converser", 
         color: "border-amber-400 text-amber-400", 
         bg: "bg-amber-400 text-black", 
+        bgLight: "bg-amber-100 text-amber-900 border-amber-400 font-bold",
         icon: "C",
         desc: "Profile: Mid-length consistent messaging" 
       };
@@ -210,6 +357,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
         name: "Rapid Responder", 
         color: "border-rose-500 text-rose-500", 
         bg: "bg-rose-500 text-white", 
+        bgLight: "bg-rose-100 text-rose-900 border-rose-400 font-bold",
         icon: "R",
         desc: "Profile: Quick, active reply bursts" 
       };
@@ -455,13 +603,13 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
     }
 
     return (
-      <div className="bg-[#121212] border border-neutral-800 p-6 shadow-xl space-y-5" id="timeline-zoom-panel">
+      <div className="bg-[#121212] border border-neutral-800 p-6 shadow-xl space-y-5 zoom-panel" id="timeline-zoom-panel">
         <div className="flex flex-col sm:flex-row justify-between sm:items-center pb-2 border-b border-neutral-900 gap-3">
           <div className="space-y-0.5">
             <h3 className="text-sm font-black text-white font-mono uppercase tracking-widest flex items-center gap-1.5">
-              <Activity className="w-4 h-4 text-[#bfff00]" /> CHAT ACTIVITY TIMELINE
+              <Activity className="w-4 h-4 text-[#bfff00] zoom-element" /> CHAT ACTIVITY TIMELINE
             </h3>
-            <p className="text-[9px] text-neutral-500 font-mono uppercase tracking-wider">
+            <p className="text-[9px] text-neutral-500 font-mono uppercase tracking-wider zoom-text">
               DRAG SLIDERS BELOW TO ZOOM INTO SPECIFIC TIME SEGMENTS
             </p>
           </div>
@@ -474,13 +622,13 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                   setStartIndex(0);
                   setEndIndex(fullTimeline.length - 1);
                 }}
-                className="text-[9px] font-mono bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-amber-550 px-2 py-1 uppercase tracking-widest transition-all cursor-pointer"
+                className="text-[9px] font-mono bg-neutral-900 hover:bg-neutral-800 border border-neutral-800 text-amber-550 px-2 py-1 uppercase tracking-widest transition-all cursor-pointer zoom-control"
                 id="reset-zoom-btn"
               >
                 Reset Zoom
               </button>
             )}
-            <span className="text-[9px] font-mono text-[#bfff00] bg-black px-2 py-1 border border-neutral-850 font-black uppercase tracking-widest">
+            <span className="text-[9px] font-mono text-[#bfff00] bg-black px-2 py-1 border border-neutral-850 font-black uppercase tracking-widest zoom-badge zoom-indicator">
               ZOOM ENABLED
             </span>
           </div>
@@ -840,8 +988,8 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
           </p>
         </div>
 
-        {/* Peak Session & Peak Activity day info */}
-        <div className="flex flex-wrap gap-4 text-xs font-mono bg-black border border-neutral-850 p-4 relative z-10">
+        {/* Peak Session & Peak Activity day info & Export */}
+        <div className="flex flex-wrap items-center gap-4 text-xs font-mono bg-black border border-neutral-850 p-4 relative z-10 w-full md:w-auto">
           <div className="space-y-0.5 min-w-[124px]">
             <p className="text-[#bfff00] font-black text-[9px] uppercase tracking-widest flex items-center gap-1">
               <Clock className="w-3 h-3 text-[#bfff00]" /> PEAK SPEED ZONE
@@ -863,6 +1011,46 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
             </p>
             <p className="text-[8px] text-neutral-500 uppercase">{peakDay ? `${peakDay.count.toLocaleString()} msg peak` : 'Record count empty'}</p>
           </div>
+
+          <div className="w-px bg-neutral-800 self-stretch hidden sm:block" />
+
+          <button
+            onClick={handleDownloadStats}
+            disabled={downloadStatus !== 'idle'}
+            className={`flex items-center gap-1.5 px-3.5 py-2 font-mono text-[9px] sm:text-[10px] uppercase font-bold tracking-wider cursor-pointer duration-200 text-center select-none ${
+              downloadStatus === 'idle'
+                ? 'bg-[#bfff00] text-black border border-[#bfff00] hover:bg-black hover:text-[#bfff00] hover:scale-[1.03] active:scale-95'
+                : downloadStatus === 'completed'
+                ? 'bg-emerald-500 text-white border border-emerald-500 animate-pulse'
+                : 'bg-neutral-800 text-neutral-400 border border-neutral-750 cursor-not-allowed'
+            }`}
+            id="download-stats-btn"
+          >
+            {downloadStatus === 'idle' && (
+              <>
+                <Download className="w-3.5 h-3.5 shrink-0" />
+                <span>Download Stats</span>
+              </>
+            )}
+            {downloadStatus === 'preparing' && (
+              <>
+                <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin" />
+                <span>Preparing CSV...</span>
+              </>
+            )}
+            {downloadStatus === 'downloading' && (
+              <>
+                <Loader2 className="w-3.5 h-3.5 shrink-0 animate-spin text-[#bfff00]" />
+                <span className="animate-pulse">Downloading...</span>
+              </>
+            )}
+            {downloadStatus === 'completed' && (
+              <>
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                <span>Download Complete! ✅</span>
+              </>
+            )}
+          </button>
         </div>
       </div>
 
@@ -890,7 +1078,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
           className="grid grid-cols-2 lg:grid-cols-4 gap-4" 
           id="stats-bento-grid"
         >
-          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md" id="metric-messages">
+          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md metric-card" id="metric-messages">
             <div className="absolute top-0 left-0 w-full h-1 bg-[#bfff00]" />
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black font-mono text-neutral-400 uppercase tracking-widest">TOTAL MESSAGES</span>
@@ -907,7 +1095,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
             </div>
           </div>
 
-          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md" id="metric-words">
+          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md metric-card" id="metric-words">
             <div className="absolute top-0 left-0 w-full h-1 bg-amber-400" />
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black font-mono text-neutral-400 uppercase tracking-widest">DIALOGUE WORDS</span>
@@ -924,7 +1112,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
             </div>
           </div>
 
-          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md" id="metric-emojis">
+          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md metric-card" id="metric-emojis">
             <div className="absolute top-0 left-0 w-full h-1 bg-pink-500" />
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black font-mono text-neutral-400 uppercase tracking-widest">EMOTIVE EMOJIS</span>
@@ -941,7 +1129,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
             </div>
           </div>
 
-          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md" id="metric-participants">
+          <div className="bg-[#121212]/90 border border-neutral-800/80 p-5 relative overflow-hidden group shadow-md metric-card" id="metric-participants">
             <div className="absolute top-0 left-0 w-full h-1 bg-purple-500" />
             <div className="flex items-center justify-between mb-3">
               <span className="text-[10px] font-black font-mono text-neutral-400 uppercase tracking-widest">PARTICIPANTS</span>
@@ -988,27 +1176,43 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                       onClick={() => setSelectedParticipant(isSelected ? null : p.name)}
                       className={`p-4 border transition-all duration-300 cursor-pointer relative ${
                         isSelected
-                          ? 'border-[#bfff00] bg-black shadow-lg shadow-[#bfff00]/2'
-                          : 'border-neutral-850 bg-neutral-900/40 hover:border-[#bfff00]/50 hover:bg-neutral-900/80'
+                          ? isLightMode
+                            ? 'border-emerald-500 bg-white shadow-lg shadow-emerald-500/10'
+                            : 'border-[#bfff00] bg-black shadow-lg shadow-[#bfff00]/2'
+                          : isLightMode
+                            ? 'border-emerald-200 bg-emerald-50/40 hover:border-emerald-400 hover:bg-emerald-50/80'
+                            : 'border-neutral-850 bg-neutral-900/40 hover:border-[#bfff00]/50 hover:bg-neutral-900/80'
                       }`}
                       id={`p-row-${idx}`}
                     >
                       {isSelected && (
-                        <div className="absolute top-0 right-0 w-2.5 h-2.5 bg-[#bfff00] shadow-[0_0_8px_#bfff00] animate-pulse" />
+                        <div className={`absolute top-0 right-0 w-2.5 h-2.5 animate-pulse ${
+                          isLightMode 
+                            ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]' 
+                            : 'bg-[#bfff00] shadow-[0_0_8px_#bfff00]'
+                        }`} />
                       )}
 
                       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5 mb-2.5">
                         <div className="flex items-center gap-2.5">
                           <span className={`flex items-center justify-center w-7 h-7 font-black font-mono text-[10px] border rounded-none transition-all duration-300 ${
-                            idx === 0 
-                              ? 'bg-[#bfff00] text-black border-[#bfff00]' 
-                              : 'bg-neutral-950 text-neutral-400 border-neutral-850'
+                            isLightMode
+                              ? idx === 0 
+                                ? 'bg-emerald-500 text-white border-emerald-600 font-extrabold' 
+                                : 'bg-white text-emerald-800 border-emerald-200 font-bold'
+                              : idx === 0 
+                                ? 'bg-[#bfff00] text-black border-[#bfff00]' 
+                                : 'bg-neutral-950 text-neutral-400 border-neutral-850'
                           }`}>
                             #{idx + 1}
                           </span>
                           <div>
-                            <h4 className="font-extrabold text-white text-xs sm:text-sm tracking-wide uppercase font-display">{p.name}</h4>
-                            <span className="text-[7.5px] font-mono font-bold text-neutral-500 uppercase tracking-widest bg-neutral-950 px-1.5 py-0.5 border border-neutral-850">
+                            <h4 className={`font-extrabold text-xs sm:text-sm tracking-wide uppercase font-display ${isLightMode ? 'text-emerald-950' : 'text-white'}`}>{p.name}</h4>
+                            <span className={`text-[7.5px] font-mono font-bold uppercase tracking-widest px-1.5 py-0.5 border ${
+                              isLightMode
+                                ? 'bg-white text-emerald-800 border-emerald-200'
+                                : 'bg-neutral-950 text-neutral-500 border-neutral-850'
+                            }`}>
                               PARTICIPANT MEMBER
                             </span>
                           </div>
@@ -1017,17 +1221,27 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                         <div className="flex items-center gap-3 self-end sm:self-auto">
                           <span 
                             title={profile.desc}
-                            className={`w-6 h-6 rounded-full border-2 ${profile.color} flex items-center justify-center font-black font-mono text-[9px] bg-black shrink-0 relative`}
+                            className={`w-6 h-6 rounded-full border flex items-center justify-center font-bold font-mono text-[10px] shrink-0 relative ${
+                              isLightMode 
+                                ? `${profile.bgLight}` 
+                                : `bg-black ${profile.color} border-2`
+                            }`}
                           >
                             {profile.icon}
                           </span>
 
                           <div className="text-right">
-                            <span className="font-mono text-xs sm:text-xs font-black text-white">
+                            <span className={`font-mono text-xs sm:text-xs font-black ${isLightMode ? 'text-emerald-950 font-extrabold' : 'text-white'}`}>
                               {p.messageCount.toLocaleString()} MESSAGES
                             </span>
                             <span className={`text-[8.5px] font-mono font-extrabold px-1.5 py-0.5 ml-2 ${
-                              idx === 0 ? 'bg-purple-950 text-purple-400 border border-purple-800' : 'bg-neutral-950 text-neutral-400'
+                              isLightMode
+                                ? idx === 0 
+                                  ? 'bg-purple-100 text-purple-900 border border-purple-300' 
+                                  : 'bg-emerald-100 text-emerald-900 border border-emerald-350'
+                                : idx === 0 
+                                  ? 'bg-purple-950 text-purple-400 border border-purple-800' 
+                                  : 'bg-neutral-950 text-neutral-400'
                             }`}>
                               {percentage}%
                             </span>
@@ -1035,24 +1249,36 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                         </div>
                       </div>
 
-                      <div className="w-full bg-neutral-950 h-2 border border-neutral-900 relative p-0.5 overflow-hidden">
+                      <div className={`w-full h-2 border relative p-0.5 overflow-hidden ${
+                        isLightMode ? 'bg-white border-emerald-100' : 'bg-neutral-950 border-neutral-900'
+                      }`}>
                         <motion.div
                           initial={{ width: 0 }}
                           animate={{ width: `${percentage}%` }}
                           transition={{ duration: 0.8, ease: [0.16, 1, 0.3, 1] }}
                           className={`h-full ${
-                            idx === 0 
-                              ? 'bg-[#bfff00]' 
-                              : 'bg-neutral-600'
+                            isLightMode
+                              ? idx === 0 
+                                ? 'bg-emerald-600' 
+                                : 'bg-emerald-400'
+                              : idx === 0 
+                                ? 'bg-[#bfff00]' 
+                                : 'bg-neutral-600'
                           }`}
                         />
                       </div>
 
-                      <div className="flex flex-wrap items-center justify-between gap-4 text-[8px] font-mono text-neutral-400 mt-2.5 pt-2 border-t border-dashed border-neutral-850">
-                        <span className="flex items-center gap-1"><Timer className="w-3 h-3 text-[#bfff00]" /> DIFF: <span className="text-white font-bold">{deltaStr}</span></span>
-                        <span>📊 LENGTH: <span className="text-neutral-200 font-bold">{p.wordCount.toLocaleString()} WORDS</span></span>
-                        <span>💡 COMMUNICATIVE: <span className="text-neutral-200 font-bold">{p.emojiCount.toLocaleString()} EM</span></span>
-                        <span>⚡ COMPLEXITY: <span className="text-[#bfff00] font-bold">{Math.round(p.characterCount / p.messageCount)} CH</span></span>
+                      <div className={`flex flex-wrap items-center justify-between gap-4 text-[8px] font-mono mt-2.5 pt-2 border-t border-dashed ${
+                        isLightMode 
+                          ? 'text-emerald-800 border-emerald-250' 
+                          : 'text-neutral-400 border-neutral-850'
+                      }`}>
+                        <span className="flex items-center gap-1">
+                          <Timer className="w-3 h-3 text-emerald-600" /> DIFF: <span className={`${isLightMode ? 'text-emerald-950' : 'text-white'} font-bold`}>{deltaStr}</span>
+                        </span>
+                        <span>📊 LENGTH: <span className={`${isLightMode ? 'text-emerald-950' : 'text-neutral-200'} font-bold`}>{p.wordCount.toLocaleString()} WORDS</span></span>
+                        <span>💡 COMMUNICATIVE: <span className={`${isLightMode ? 'text-emerald-950' : 'text-neutral-200'} font-bold`}>{p.emojiCount.toLocaleString()} EM</span></span>
+                        <span>⚡ COMPLEXITY: <span className={`${isLightMode ? 'text-emerald-600' : 'text-[#bfff00]'} font-bold`}>{Math.round(p.characterCount / p.messageCount)} CH</span></span>
                       </div>
 
                       {/* Focus statistics list */}
@@ -1069,11 +1295,15 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                             transition={{ duration: 0.3 }}
                             className="mt-3.5 pt-3.5 border-t border-neutral-900 space-y-3.5 overflow-hidden"
                           >
-                            <div className="flex justify-between items-center bg-[#0a0a0a] p-2 border border-neutral-900 rounded font-mono">
+                            <div className={`flex justify-between items-center p-2 border rounded font-mono ${
+                              isLightMode ? 'bg-white border-emerald-100' : 'bg-[#0a0a0a] border-neutral-900'
+                            }`}>
                               <span className="text-[10px] text-neutral-400 uppercase font-bold flex items-center gap-1">
                                 <AlertCircle className="w-3.5 h-3.5 text-neutral-500" /> CLASSIFICATION:
                               </span>
-                              <span className="text-[9px] text-white font-extrabold bg-neutral-900 px-2 py-0.5 border border-neutral-800 rounded flex items-center gap-1.5 animate-pulse">
+                              <span className={`text-[9px] font-extrabold px-2 py-0.5 border rounded flex items-center gap-1.5 animate-pulse ${
+                                isLightMode ? 'bg-emerald-50 text-emerald-900 border-emerald-250' : 'bg-neutral-900 text-white border-neutral-800'
+                              }`}>
                                 {profile.name}
                               </span>
                             </div>
@@ -1083,7 +1313,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                               <div className="flex justify-between items-center text-[8.5px] font-mono font-bold text-neutral-400 uppercase tracking-widest">
                                 <span>SPEECH SENTIMENT TRAJECTORY:</span>
                                 <span className="flex gap-2">
-                                  <span className="text-emerald-400">POS {posPct}%</span>
+                                  <span className="text-emerald-500">POS {posPct}%</span>
                                   <span className="text-neutral-400">NEU {neuPct}%</span>
                                   <span className="text-pink-400">NEG {negPct}%</span>
                                 </span>
@@ -1097,17 +1327,17 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
 
                             {/* Inquiring and Timing Analytics */}
                             <div className="grid grid-cols-2 gap-2 text-center text-xs font-mono">
-                              <div className="p-2 bg-neutral-950 border border-neutral-900 rounded">
+                              <div className={`p-2 rounded border ${isLightMode ? 'bg-white border-emerald-100' : 'bg-neutral-950 border-neutral-900'}`}>
                                 <p className="text-[8px] text-neutral-500 uppercase font-bold mb-0.5">❓ DIALOGUE QUERIES</p>
-                                <p className="text-xs font-bold text-white">{(p.questionCount || 0).toLocaleString()} <span className="text-[9px] text-neutral-600 font-bold">QS</span></p>
+                                <p className={`text-xs font-bold ${isLightMode ? 'text-emerald-900' : 'text-white'}`}>{(p.questionCount || 0).toLocaleString()} <span className="text-[9px] text-neutral-400 font-bold">QS</span></p>
                               </div>
-                              <div className="p-2 bg-neutral-950 border border-neutral-900 rounded">
+                              <div className={`p-2 rounded border ${isLightMode ? 'bg-white border-emerald-100' : 'bg-neutral-950 border-neutral-900'}`}>
                                 <p className="text-[8px] text-neutral-500 uppercase font-bold mb-0.5">🌙 LATE NIGHT TRANSCRIPTS</p>
-                                <p className="text-xs font-bold text-amber-500">{(p.lateNightCount || 0).toLocaleString()} <span className="text-[9px] text-neutral-600 font-bold">MSGS</span></p>
+                                <p className={`text-xs font-bold text-amber-600`}>{(p.lateNightCount || 0).toLocaleString()} <span className="text-[9px] text-neutral-400 font-bold">MSGS</span></p>
                               </div>
                             </div>
                             
-                            <p className="text-[8px] text-[#bfff55] font-black uppercase tracking-widest">TOP RECORDED CHAT SYMBOLS:</p>
+                            <p className={`text-[8.5px] ${isLightMode ? 'text-emerald-800' : 'text-[#bfff55]'} font-black uppercase tracking-widest`}>TOP RECORDED CHAT SYMBOLS:</p>
                             <div className="flex flex-wrap gap-1.5">
                               {Object.entries(p.emojis)
                                 .sort((a, b) => b[1] - a[1])
@@ -1115,10 +1345,12 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                 .map(([em, count], eidx) => (
                                   <span
                                     key={eidx}
-                                    className="inline-flex items-center gap-1 bg-black border border-neutral-800 text-xs px-2 py-0.5 text-white font-mono"
+                                    className={`inline-flex items-center gap-1 border text-xs px-2 py-0.5 font-mono ${
+                                      isLightMode ? 'bg-white border-emerald-200 text-emerald-950' : 'bg-black border-neutral-800 text-white'
+                                    }`}
                                   >
                                     <span>{em}</span>
-                                    <span className="text-[8px] text-[#bfff00] font-black">{count}</span>
+                                    <span className={`text-[8.5px] font-black ${isLightMode ? 'text-emerald-600' : 'text-[#bfff00]'}`}>{count}</span>
                                   </span>
                                 ))}
                               {Object.keys(p.emojis).length === 0 && (
@@ -1157,7 +1389,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
               ) : (
                 <div className="relative flex flex-col items-center">
                   {/* Circular SVG Map */}
-                  <svg className="w-full max-w-[380px] h-auto overflow-visible select-none" viewBox="0 0 440 380">
+                  <svg className="w-full max-w-[480px] h-auto overflow-visible select-none transition-all duration-300" viewBox="0 0 440 380">
                     <defs>
                       <filter id="neon-glow" x="-20%" y="-20%" width="140%" height="140%">
                         <feGaussianBlur stdDeviation="3.5" result="blur" />
@@ -1223,12 +1455,14 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                               const hasAnyHover = hoveredNode !== null;
                               const hasAnySelect = selectedParticipant !== null;
 
-                              let strokeColor = 'rgba(191, 255, 0, 0.15)';
+                              let strokeColor = isLightMode 
+                                ? 'rgba(22, 163, 74, 0.25)' 
+                                : 'rgba(191, 255, 0, 0.15)';
                               let opacity = 0.35;
                               let strokeWidth = 1 + (link.value / maxVal) * 4;
 
                               if (isHighlighted) {
-                                strokeColor = '#bfff00';
+                                strokeColor = isLightMode ? '#16a34a' : '#bfff00';
                                 opacity = 0.95;
                                 strokeWidth = strokeWidth + 1.5;
                               } else if (hasAnyHover || hasAnySelect) {
@@ -1245,7 +1479,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                   strokeLinecap="round"
                                   opacity={opacity}
                                   className="transition-all duration-200"
-                                  style={isHighlighted ? { filter: 'url(#neon-glow)' } : {}}
+                                  style={isHighlighted && !isLightMode ? { filter: 'url(#neon-glow)' } : {}}
                                 />
                               );
                             })}
@@ -1264,20 +1498,31 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
 
                                 return (
                                   <g transform={`translate(${cx}, ${cy})`} className="pointer-events-none">
-                                    <circle r="46" fill="#09090b" stroke="#bfff00" strokeWidth="1.5" strokeDasharray="3 3" />
-                                    <text y="-14" textAnchor="middle" className="text-[7.5px] fill-neutral-400 font-mono font-extrabold tracking-widest uppercase">SPEAKER ACTIVE</text>
-                                    <text y="3" textAnchor="middle" className="text-[10px] fill-[#bfff00] font-mono font-black uppercase tracking-wider">{displayName}</text>
-                                    <text y="16" textAnchor="middle" className="text-[8px] fill-white font-mono font-bold tracking-wide">{count} REPLIES</text>
-                                    <text y="26" textAnchor="middle" className="text-[7.5px] fill-neutral-400 font-mono font-medium">WITH {partnerCount} MEMBERS</text>
+                                    <circle 
+                                      r="46" 
+                                      fill={isLightMode ? "#dcfce7" : "#09090b"} 
+                                      stroke={isLightMode ? "#16a34a" : "#bfff00"} 
+                                      strokeWidth="1.5" 
+                                      strokeDasharray="3 3" 
+                                    />
+                                    <text y="-14" textAnchor="middle" className={`text-[7.5px] font-mono font-bold tracking-widest uppercase ${isLightMode ? 'fill-emerald-800' : 'fill-neutral-400'}`}>SPEAKER ACTIVE</text>
+                                    <text y="3" textAnchor="middle" className={`text-[10px] font-mono font-bold uppercase tracking-wider ${isLightMode ? 'fill-emerald-950 font-extrabold' : 'fill-[#bfff00] font-black'}`}>{displayName}</text>
+                                    <text y="16" textAnchor="middle" className={`text-[8.5px] font-mono font-bold tracking-wide ${isLightMode ? 'fill-emerald-900 font-extrabold' : 'fill-white'}`}>{count} REPLIES</text>
+                                    <text y="26" textAnchor="middle" className={`text-[7.5px] font-mono font-medium ${isLightMode ? 'fill-emerald-700' : 'fill-neutral-400'}`}>WITH {partnerCount} MEMBERS</text>
                                   </g>
                                 );
                               } else {
                                 return (
                                   <g transform={`translate(${cx}, ${cy})`} className="pointer-events-none">
-                                    <circle r="46" fill="#0c0c0e" stroke="#262626" strokeWidth="1.5" />
-                                    <text y="-11" textAnchor="middle" className="text-[7.5px] fill-neutral-400 font-mono font-black tracking-wider uppercase">COUPLING MATRIX</text>
-                                    <text y="5" textAnchor="middle" className="text-[11px] fill-[#bfff00] font-mono font-black tracking-widest">{conversationTopology.links.length} EDGES</text>
-                                    <text y="17" textAnchor="middle" className="text-[6.5px] fill-neutral-500 font-mono uppercase font-black tracking-wider">STABLE COHESION</text>
+                                    <circle 
+                                      r="46" 
+                                      fill={isLightMode ? "#f0fdf4" : "#0c0c0e"} 
+                                      stroke={isLightMode ? "#86efac" : "#262626"} 
+                                      strokeWidth="1.5" 
+                                    />
+                                    <text y="-11" textAnchor="middle" className={`text-[7.5px] font-mono font-bold tracking-wider uppercase ${isLightMode ? 'fill-emerald-800' : 'fill-neutral-400'}`}>COUPLING MATRIX</text>
+                                    <text y="5" textAnchor="middle" className={`text-[11px] font-mono font-bold tracking-widest ${isLightMode ? 'fill-emerald-950 font-extrabold' : 'fill-[#bfff00] font-black'}`}>{conversationTopology.links.length} EDGES</text>
+                                    <text y="17" textAnchor="middle" className={`text-[6.5px] font-mono uppercase font-bold tracking-wider ${isLightMode ? 'fill-emerald-600' : 'fill-neutral-500'}`}>STABLE COHESION</text>
                                   </g>
                                 );
                               }
@@ -1333,7 +1578,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                               return (
                                 <g
                                   key={node.id}
-                                  className="cursor-pointer"
+                                  className="cursor-pointer font-sans"
                                   onMouseEnter={() => setHoveredNode(node.id)}
                                   onMouseLeave={() => setHoveredNode(null)}
                                   onClick={() => setSelectedParticipant(isSelected ? null : node.id)}
@@ -1345,7 +1590,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                       cy={node.y}
                                       r="18"
                                       fill="none"
-                                      stroke="#bfff00"
+                                      stroke={isLightMode ? "#16a34a" : "#bfff00"}
                                       strokeWidth="1.5"
                                       className="animate-ping opacity-50"
                                     />
@@ -1355,8 +1600,16 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                     cx={node.x}
                                     cy={node.y}
                                     r={isHovered || isSelected ? "13.5" : "11"}
-                                    fill={isHovered || isSelected ? "#bfff00" : "#141417"}
-                                    stroke={isHovered || isSelected ? '#bfff00' : '#525252'}
+                                    fill={
+                                      isHovered || isSelected 
+                                        ? isLightMode ? "#22c55e" : "#bfff00" 
+                                        : isLightMode ? "#ffffff" : "#141417"
+                                    }
+                                    stroke={
+                                      isHovered || isSelected 
+                                        ? isLightMode ? '#1e3a1e' : '#bfff00' 
+                                        : isLightMode ? '#86efac' : '#525252'
+                                    }
                                     strokeWidth={isHovered || isSelected ? "2.5" : "1.2"}
                                     className="transition-all duration-150"
                                   />
@@ -1366,8 +1619,12 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                     y={node.y}
                                     textAnchor="middle"
                                     dominantBaseline="central"
-                                    className="text-[9.5px] font-mono font-black"
-                                    fill={isHovered || isSelected ? '#000000' : '#e5e5e5'}
+                                    className="text-[9.5px] font-mono font-bold"
+                                    fill={
+                                      isHovered || isSelected 
+                                        ? isLightMode ? '#ffffff' : '#000000' 
+                                        : isLightMode ? '#14532d' : '#e5e5e5'
+                                    }
                                   >
                                     {initials}
                                   </text>
@@ -1378,10 +1635,10 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                     y={lblY}
                                     textAnchor={txtAnchor}
                                     dominantBaseline={dominantBaseline}
-                                    stroke="#000000"
+                                    stroke={isLightMode ? "#f0fdf4" : "#000000"}
                                     strokeWidth="4"
                                     strokeLinejoin="round"
-                                    className="text-[9.5px] font-mono font-black uppercase tracking-widest select-none pointer-events-none"
+                                    className="text-[10px] font-mono font-medium uppercase tracking-widest select-none pointer-events-none"
                                     opacity="0.95"
                                   >
                                     {node.id}
@@ -1393,8 +1650,12 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
                                     y={lblY}
                                     textAnchor={txtAnchor}
                                     dominantBaseline={dominantBaseline}
-                                    className="text-[9.5px] font-mono font-black uppercase tracking-widest transition-colors duration-150"
-                                    fill={isHovered || isSelected ? '#bfff00' : '#e4e4e7'}
+                                    className="text-[10px] font-mono font-medium uppercase tracking-widest transition-colors duration-150"
+                                    fill={
+                                      isHovered || isSelected 
+                                        ? isLightMode ? '#166534' : '#bfff00' 
+                                        : isLightMode ? '#14532d' : '#e4e4e7'
+                                    }
                                   >
                                     {node.id}
                                   </text>
@@ -1410,12 +1671,26 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
               )}
             </div>
 
-            <div className="mt-5 pt-3 border-t border-neutral-900 bg-neutral-950/20 p-2.5 text-center" id="topology-legends-wrapper">
-              <span className="text-[8px] text-neutral-500 font-mono tracking-widest uppercase block mb-1">PROXIMITY NETWORK LEGEND:</span>
-              <div className="flex flex-wrap justify-center gap-4 font-mono text-[7.5px] text-neutral-400">
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-[#bfff00]" /> ACTIVE COUPLING</span>
-                <span className="flex items-center gap-1.5"><span className="w-2.5 h-1 bg-neutral-850" /> WEAK REACTION</span>
-                <span className="flex items-center gap-1.5"><span className="w-2 h-2 rounded-full border border-[#bfff00] bg-black" /> SELECTED SPEAKER</span>
+            <div className={`mt-5 pt-3 border-t p-2.5 text-center ${
+              isLightMode ? 'border-emerald-250 bg-emerald-100/10' : 'border-neutral-900 bg-neutral-950/20'
+            }`} id="topology-legends-wrapper">
+              <span className={`text-[8.5px] font-mono tracking-widest uppercase block mb-1 ${
+                isLightMode ? 'text-emerald-800' : 'text-neutral-500'
+              }`}>PROXIMITY NETWORK LEGEND:</span>
+              <div className={`flex flex-wrap justify-center gap-4 font-mono text-[8px] ${
+                isLightMode ? 'text-emerald-950' : 'text-neutral-400'
+              }`}>
+                <span className="flex items-center gap-1.5">
+                  <span className={`w-2.5 h-1 ${isLightMode ? 'bg-[#22c55e]' : 'bg-[#bfff00]'}`} /> ACTIVE COUPLING
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className={`w-2.5 h-1 ${isLightMode ? 'bg-emerald-200' : 'bg-neutral-850'}`} /> WEAK REACTION
+                </span>
+                <span className="flex items-center gap-1.5">
+                  <span className={`w-2 h-2 rounded-full border ${
+                    isLightMode ? 'border-[#16a34a] bg-emerald-100/20' : 'border-[#bfff00] bg-black'
+                  }`} /> SELECTED SPEAKER
+                </span>
               </div>
             </div>
           </div>
@@ -1452,7 +1727,7 @@ export default function Dashboard({ stats, messages = [] }: DashboardProps) {
               <h3 className="text-xs font-black text-white font-mono uppercase tracking-widest flex items-center gap-1.5">
                 <Activity className="w-4 h-4 text-amber-400" /> HOURLY DIALOGUE DENSITY CHART
               </h3>
-              <span className="text-[8px] font-mono text-[#bfff00] bg-black px-1.5 py-0.5 border border-neutral-850 font-black uppercase tracking-widest">LIVE DATA FEED</span>
+              <span className="text-[8px] font-mono text-[#bfff00] bg-black px-1.5 py-0.5 border border-neutral-850 font-black uppercase tracking-widest metric-badge">LIVE DATA FEED</span>
             </div>
             
             <motion.div

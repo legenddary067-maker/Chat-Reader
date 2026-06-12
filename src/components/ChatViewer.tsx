@@ -357,7 +357,29 @@ export default function ChatViewer({ messages, participants, stats, fileName }: 
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedSenderFilter, setSelectedSenderFilter] = useState<string | null>(null);
   const [alignUser, setAlignUser] = useState<string>(''); // Determines "Me"
-  const [theme, setTheme] = useState<ChatTheme>('ios-dark');
+  const [theme, setTheme] = useState<ChatTheme>(() => {
+    const isPageLight = typeof document !== 'undefined' && document.getElementById('chatreader-root')?.classList.contains('light-mode');
+    return isPageLight ? 'ios-light' : 'ios-dark';
+  });
+
+  useEffect(() => {
+    const updateTheme = () => {
+      const isPageLight = document.getElementById('chatreader-root')?.classList.contains('light-mode');
+      setTheme(isPageLight ? 'ios-light' : 'ios-dark');
+    };
+    
+    // Initial update
+    updateTheme();
+    
+    // Set up MutationObserver to sync theme whenever classlist of chatreader-root updates
+    const rootEl = document.getElementById('chatreader-root');
+    if (!rootEl) return;
+    
+    const observer = new MutationObserver(updateTheme);
+    observer.observe(rootEl, { attributes: true, attributeFilter: ['class'] });
+    
+    return () => observer.disconnect();
+  }, []);
   const [density, setDensity] = useState<'cozy' | 'compact'>('cozy');
 
   // Reply selection state
@@ -570,7 +592,7 @@ export default function ChatViewer({ messages, participants, stats, fileName }: 
                   className={`capitalize px-3 py-1 text-[10px] rounded-md border font-mono tracking-wider font-extrabold transition-all duration-200 shrink-0 ${
                     theme === t
                       ? 'bg-[#bfff00] text-black border-[#bfff00] shadow-[#bfff00]/20 shadow-md'
-                      : 'bg-[#121212] text-neutral-400 border-neutral-800 hover:text-white hover:border-neutral-700 hover:bg-neutral-850'
+                      : 'bg-neutral-900 text-neutral-450 border-neutral-800 hover:text-neutral-200 hover:border-neutral-700 hover:bg-neutral-850'
                   }`}
                   id={`theme-btn-${t}`}
                 >
